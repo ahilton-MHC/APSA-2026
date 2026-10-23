@@ -1,0 +1,684 @@
+---
+title: "RINO Hunting"
+subtitle: "Figures and Tables"
+format: html
+embed-resources: true
+echo: false
+warning: false
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(scales)
+library(ggalluvial)
+```
+
+```{r}
+#| label: load-data
+all_sheets <- excel_sheets("rino_data.xlsx") |>
+  setNames(excel_sheets("rino_data.xlsx")) |>
+  lapply(\(s) read_excel("rino_data.xlsx", sheet = s))
+
+rino_officeholders <- all_sheets$rino_officeholders
+rinos_by_cycle     <- all_sheets$rinos_by_cycle
+rino_events        <- all_sheets$rino_events
+people_name_id     <- all_sheets$people_name_id
+people_labels      <- all_sheets$people_labels
+all_events         <- all_sheets$all_events
+```
+
+```{r}
+#| label: overview-counts
+n_events     <- nrow(all_events)
+n_people     <- n_distinct(rino_events$rino_attack)
+date_range   <- range(all_events$event_date, na.rm = TRUE)
+```
+
+## Events over time
+
+How many instances of RINO attacks over time?
+
+```{r}
+#| label: fig-events-by-platform
+#| fig-cap: "Quarterly RINO attack event counts by platform. Truth Social became the dominant vehicle from 2022 onward, displacing Twitter/X following Trump's ban in January 2021."
+all_events |>
+  mutate(quarter = floor_date(event_date, unit = "quarter")) |>
+  ggplot(aes(x = quarter, fill = platform)) +
+  geom_bar() +
+  labs(x = "Quarter", y = "Number of events", fill = "Platform") +
+  theme(legend.position = "bottom")
+```
+
+## Election cycle patterns
+
+```{r}
+#| label: fig-election-cycles
+#| fig-cap: "Quarterly event counts with primary seasons shaded (Mar–Aug, election years) and general election days marked. Event volume tends to rise during primary seasons and trough after general elections."
+all_events |>
+  mutate(quarter = floor_date(event_date, unit = "quarter")) |>
+  ggplot(aes(x = quarter, fill = platform)) +
+  annotate("rect",
+    xmin = as.POSIXct("2022-03-01"), xmax = as.POSIXct("2022-08-31"),
+    ymin = -Inf, ymax = Inf, alpha = 0.10, fill = "steelblue") +
+  annotate("rect",
+    xmin = as.POSIXct("2024-03-01"), xmax = as.POSIXct("2024-08-31"),
+    ymin = -Inf, ymax = Inf, alpha = 0.10, fill = "steelblue") +
+  annotate("rect",
+    xmin = as.POSIXct("2026-03-01"), xmax = as.POSIXct("2026-08-31"),
+    ymin = -Inf, ymax = Inf, alpha = 0.10, fill = "steelblue") +
+  geom_vline(xintercept = as.POSIXct("2022-11-08"), linetype = "dashed", color = "gray30") +
+  geom_vline(xintercept = as.POSIXct("2024-11-05"), linetype = "dashed", color = "gray30") +
+  geom_bar() +
+  annotate("text", x = as.POSIXct("2022-11-08"), y = 31, label = "Nov 2022", hjust = -0.1, size = 3) +
+  annotate("text", x = as.POSIXct("2024-11-05"), y = 31, label = "Nov 2024", hjust = -0.1, size = 3) +
+  annotate("text", x = as.POSIXct("2022-05-01"), y = 29, label = "Primary\nSeason", hjust = 0.5, size = 2.8, color = "steelblue4") +
+  annotate("text", x = as.POSIXct("2024-05-01"), y = 29, label = "Primary\nSeason", hjust = 0.5, size = 2.8, color = "steelblue4") +
+  annotate("text", x = as.POSIXct("2026-05-01"), y = 29, label = "Primary\nSeason", hjust = 0.5, size = 2.8, color = "steelblue4") +
+  coord_cartesian(xlim = c(as.POSIXct("2019-10-01"), NA)) +
+  labs(x = "Quarter", y = "Number of events", fill = "Platform",
+       subtitle = "Shaded = primary season (Mar–Aug); dashed = general election day") +
+  theme(legend.position = "bottom")
+```
+
+## Officeholders vs. rhetorical targets
+
+```{r}
+#| label: officeholder-filter
+events_with_people <- all_events |>
+  inner_join(rino_events |> select(event_id, person_id = rino_attack), by = "event_id") |>
+  inner_join(people_name_id, by = "person_id")
+
+officeholder_events <- events_with_people |>
+  filter(person_id %in% rino_officeholders$person_id)
+
+total_n          <- nrow(events_with_people)
+officeholder_n   <- nrow(officeholder_events)
+non_officeholder_n <- total_n - officeholder_n
+```
+
+```{r}
+#| label: tbl-non-officeholders
+#| tbl-cap: "Top non-officeholder targets — former officials, donors, and media figures."
+events_with_people |>
+  filter(!person_id %in% rino_officeholders$person_id) |>
+  count(name, sort = TRUE) |>
+  rename(Name = name, Events = n)
+```
+
+## Top 10 individuals attacked
+
+```{r}
+#| label: tbl-top-10-all
+#| tbl-cap: "Top 10 most-attacked individuals across all target types."
+events_with_people |>
+  count(name, sort = TRUE) |>
+  slice_head(n = 10) |>
+  mutate(
+    officeholder = if_else(
+      name %in% filter(events_with_people, person_id %in% rino_officeholders$person_id)$name,
+      "Yes", "No")
+  ) |>
+  rename(Name = name, Events = n, Officeholder = officeholder)
+```
+
+## Top 10 targeted officeholders
+
+```{r}
+#| label: fig-top-officeholders
+#| fig-cap: "Quarterly attack event counts for the 10 most-targeted officeholders."
+#| fig-height: 8
+top_officeholder_targets <- officeholder_events |>
+  count(name, sort = TRUE) |>
+  slice_head(n = 10)
+
+officeholder_events |>
+  filter(name %in% top_officeholder_targets$name) |>
+  mutate(
+    quarter = floor_date(event_date, unit = "quarter"),
+    name = factor(name, levels = top_officeholder_targets$name)
+  ) |>
+  ggplot(aes(x = quarter, fill = name)) +
+  geom_bar() +
+  facet_wrap(~ name, ncol = 2, scales = "free_y") +
+  labs(x = "Quarter", y = "Events") +
+  theme(legend.position = "none",
+        strip.text = element_text(size = 8))
+```
+
+## All targeted officeholders
+
+```{r}
+#| label: load-all-officials
+meta_all <- read_csv("rino_officeholder_metadata.csv", show_col_types = FALSE)
+
+attack_counts_all <- officeholder_events |>
+  count(person_id, name = "n_attacks")
+
+oh_all <- meta_all |>
+  left_join(
+    rino_officeholders |> rename(officeholder = officeholder_rino_name),
+    by = "officeholder"
+  ) |>
+  left_join(attack_counts_all, by = "person_id") |>
+  mutate(
+    n_attacks = replace_na(n_attacks, 0),
+    level = case_when(
+      chamber %in% c("House", "Senate")                          ~ "Federal",
+      chamber %in% c("State House", "State Senate",
+                     "Statewide", "Local", "Presidential")       ~ "State/Local",
+      TRUE                                                        ~ NA_character_
+    ),
+    office_type = case_when(
+      chamber == "House"                             ~ "U.S. House",
+      chamber == "Senate"                            ~ "U.S. Senate",
+      chamber %in% c("Statewide", "Presidential")   ~ office,
+      chamber == "State House"                       ~ "State House",
+      chamber == "State Senate"                      ~ "State Senate",
+      TRUE                                           ~ chamber
+    )
+  )
+```
+
+### Office type breakdown
+
+```{r}
+#| label: tbl-office-type
+#| tbl-cap: "RINO-labeled officeholders by level and office type. The largest single group is state legislators (State House, 17; State Senate, 6), though federal officials collectively account for 26 of the 63 targeted."
+oh_all |>
+  count(level, office_type) |>
+  arrange(level, desc(n)) |>
+  rename(Level = level, `Office type` = office_type, N = n)
+```
+
+### Geographic concentration
+
+```{r}
+#| label: tbl-geography
+#| tbl-cap: "States with the most targeted officeholders, by level. Texas and Indiana each account for roughly one-sixth of all targeted officials, reflecting coordinated campaigns against specific legislative chambers rather than individual actors."
+oh_all |>
+  filter(!is.na(level)) |>
+  count(state, level) |>
+  pivot_wider(names_from = level, values_from = n, values_fill = 0) |>
+  mutate(Total = Federal + `State/Local`) |>
+  arrange(desc(Total)) |>
+  slice_head(n = 12) |>
+  rename(State = state)
+```
+
+```{r}
+#| label: fig-map-geographic-concentration
+#| fig-cap: "Geographic concentration of RINO-labeled officeholders by state. Each dot is positioned at the state centroid; dot size reflects the number of targeted officials. Texas and Indiana dominate, each driven by a single coordinated campaign (school vouchers / Paxton impeachment and the 2025 redistricting fight, respectively). All other states contributed at most three targeted officials."
+library(usmap)
+library(sf)
+
+state_map_data <- oh_all |>
+  filter(!is.na(state), !is.na(level)) |>
+  group_by(state) |>
+  summarise(n_officials = n(), .groups = "drop")
+
+state_centroids <- us_map(regions = "states") |>
+  st_centroid() |>
+  mutate(
+    x = st_coordinates(geom)[, 1],
+    y = st_coordinates(geom)[, 2]
+  ) |>
+  st_drop_geometry()
+
+map_points <- state_centroids |>
+  inner_join(state_map_data, by = c("abbr" = "state"))
+
+plot_usmap(fill = "grey95", color = "grey75", linewidth = 0.3) +
+  geom_point(
+    data  = map_points,
+    aes(x = x, y = y, size = n_officials),
+    alpha = 0.45,
+    color = "#CB454A"
+  ) +
+  scale_size_continuous(
+    name   = "Officials\ntargeted",
+    range  = c(3, 18),
+    breaks = c(1, 2, 5, 10)
+  ) +
+  theme(legend.position = "right")
+```
+
+### Attack intensity by office type
+
+```{r}
+#| label: fig-attacks-by-office-type
+#| fig-cap: "Distribution of attack event counts per official, by office type. Each point is one official. Officials from the Indiana and Texas state legislature clusters drive the elevated medians for State House and State Senate. Federal officials have a lower median but a higher ceiling (Thomas Massie, 12 events)."
+#| fig-height: 5
+oh_all |>
+  filter(!is.na(level)) |>
+  mutate(office_type = fct_reorder(office_type, n_attacks, .fun = median)) |>
+  ggplot(aes(x = n_attacks, y = office_type)) +
+  geom_jitter(height = 0.15, width = 0, alpha = 0.55) +
+  geom_boxplot(outlier.shape = NA, fill = NA, width = 0.4) +
+  labs(x = "Attack events", y = NULL)
+```
+
+```{r}
+#| label: level-attack-summary
+fed_med   <- oh_all |> filter(level == "Federal")     |> pull(n_attacks) |> median()
+state_med <- oh_all |> filter(level == "State/Local") |> pull(n_attacks) |> median()
+fed_max   <- oh_all |> filter(level == "Federal")     |> pull(n_attacks) |> max()
+```
+
+### Top state and local targets
+
+```{r}
+#| label: tbl-top-state
+#| tbl-cap: "The 10 most-attacked state and local officeholders. Indiana Senate leaders and Texas House members account for the majority of entries."
+oh_all |>
+  filter(level == "State/Local") |>
+  select(officeholder, office_type, state, n_attacks) |>
+  arrange(desc(n_attacks)) |>
+  slice_head(n = 10) |>
+  rename(Officeholder = officeholder, `Office type` = office_type,
+         State = state, `Attack events` = n_attacks)
+```
+
+## Electoral consequences for targeted federal officeholders
+
+```{r}
+#| label: load-outcome-panel
+library(broom)
+
+cycle_panel <- read_csv("cycle_panel_with_outcomes.csv", show_col_types = FALSE)
+```
+
+### Outcome distribution
+
+```{r}
+#| label: tbl-outcomes
+#| tbl-cap: "Primary outcomes across all election-year observations for treated federal officials. All 2026 primaries have been resolved as of August 2026."
+cycle_panel |>
+  filter(is_treated == 1, is_election_year == TRUE) |>
+  mutate(outcome_label = case_when(
+    outcome == "won_primary"   ~ "Won primary",
+    outcome == "lost_primary"  ~ "Lost primary",
+    outcome == "retired"       ~ "Retired before election",
+    TRUE                       ~ "Other"
+  )) |>
+  count(outcome_label) |>
+  mutate(
+    pct = scales::percent(n / sum(n), accuracy = 1),
+    outcome_label = factor(outcome_label,
+      levels = c("Won primary", "Lost primary", "Retired before election"))
+  ) |>
+  arrange(outcome_label) |>
+  rename(Outcome = outcome_label, N = n, `Share` = pct)
+```
+
+```{r}
+#| label: outcome-counts
+n_lost    <- sum(cycle_panel$is_treated == 1 & cycle_panel$is_election_year == TRUE &
+                   coalesce(cycle_panel$outcome, "") == "lost_primary")
+n_retired <- sum(cycle_panel$is_treated == 1 & cycle_panel$is_election_year == TRUE &
+                   coalesce(cycle_panel$outcome, "") == "retired")
+n_ey      <- sum(cycle_panel$is_treated == 1 & cycle_panel$is_election_year == TRUE)
+```
+
+### Outcomes by cumulative attack intensity
+
+```{r}
+#| label: fig-outcomes-by-attacks
+#| fig-cap: "Primary outcomes by cumulative RINO attack count at time of election. Officials with no cumulative attacks all won their primaries. Primary losses and retirements are concentrated among those with one or more cumulative attacks."
+cycle_panel |>
+  filter(is_treated == 1, is_election_year == TRUE) |>
+  mutate(
+    outcome_label = case_when(
+      outcome == "won_primary"  ~ "Won primary",
+      outcome == "lost_primary" ~ "Lost primary",
+      outcome == "retired"      ~ "Retired",
+      TRUE                      ~ "Won primary"
+    ),
+    attack_tier = cut(cumulative_attacks,
+      breaks = c(-Inf, 0, 2, Inf),
+      labels = c("None (0)", "Low (1–2)", "High (3+)"))
+  ) |>
+  count(attack_tier, outcome_label) |>
+  mutate(outcome_label = factor(outcome_label,
+    levels = c("Won primary", "Retired", "Lost primary"))) |>
+  ggplot(aes(x = attack_tier, y = n, fill = outcome_label)) +
+  geom_col() +
+  scale_fill_manual(
+    values = c("Won primary" = "#4dab6d", "Retired" = "#f4a942",
+               "Lost primary" = "#c0392b")
+  ) +
+  labs(x = "Cumulative RINO attacks at time of election",
+       y = "Number of election-year observations",
+       fill = "Outcome")
+```
+
+### Primary challenge severity
+
+```{r}
+#| label: tbl-challenge-severity
+#| tbl-cap: "Primary outcome by whether the top challenger exceeded 25% of the vote. Among the 33 election-year observations with coded vote shares, every case where a challenger cleared 25% either resulted in a primary loss (5 cases) or a close win (5 cases). No official who faced a challenger below the 25% threshold lost their primary."
+cycle_panel |>
+  filter(is_treated == 1, is_election_year == TRUE, !is.na(substantial_challenge)) |>
+  mutate(
+    challenge_label = if_else(substantial_challenge,
+      "Substantial (≥ 25%)", "Not substantial (< 25%)"),
+    outcome_label = case_when(
+      outcome == "won_primary"  ~ "Won primary",
+      outcome == "lost_primary" ~ "Lost primary",
+      outcome == "retired"      ~ "Retired",
+      TRUE                      ~ "Other"
+    )
+  ) |>
+  count(challenge_label, outcome_label) |>
+  pivot_wider(names_from = outcome_label, values_from = n, values_fill = 0) |>
+  rename(`Challenge type` = challenge_label)
+```
+
+### Official-level summary
+
+```{r}
+#| label: tbl-official-summary
+#| tbl-cap: "Summary of RINO attack exposure and primary outcomes for 23 treated federal officials with complete data. Total attacks is the cumulative sum of quarterly attack counts across all cycles. Peak opponent share is the highest primary challenger vote share recorded across election years. Officials with missing bioguide IDs (O'Dea, Hogan, Daughtry) are excluded."
+cycle_panel |>
+  filter(is_treated == 1, !is.na(bioname)) |>
+  group_by(bioname, chamber) |>
+  summarise(
+    `Total attacks` = max(cumulative_attacks, na.rm = TRUE),
+    `Election years` = sum(is_election_year, na.rm = TRUE),
+    `Worst outcome` = case_when(
+      any(outcome == "lost_primary", na.rm = TRUE) ~ "Lost primary",
+      any(outcome == "retired",      na.rm = TRUE) ~ "Retired",
+      any(outcome == "won_primary",  na.rm = TRUE) ~ "Won primary",
+      TRUE                                          ~ "No election year"
+    ),
+    peak_share = max(primary_opponent_vote_share, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    Chamber = if_else(chamber == 0, "House", "Senate"),
+    `Peak opponent share` = if_else(
+      is.infinite(peak_share), NA_character_,
+      scales::percent(peak_share, accuracy = 0.1)
+    )
+  ) |>
+  select(Name = bioname, Chamber, `Total attacks`,
+         `Election years`, `Worst outcome`, `Peak opponent share`) |>
+  arrange(desc(`Total attacks`), `Worst outcome`)
+```
+
+## Logit models
+
+```{r}
+#| label: fit-models
+treated_ey_model <- cycle_panel |>
+  filter(is_treated == 1, coalesce(is_election_year, FALSE)) |>
+  mutate(chamber_f = factor(chamber, levels = c(0, 1),
+                             labels = c("House", "Senate")),
+         lost_primary = as.integer(coalesce(outcome == "lost_primary", FALSE)))
+
+m_challenge <- glm(
+  substantial_challenge ~ cumulative_attacks + cook_pvi_num + seniority + chamber_f,
+  data   = treated_ey_model |> filter(!is.na(substantial_challenge)),
+  family = binomial
+)
+
+m_lost <- glm(
+  lost_primary ~ cumulative_attacks + cook_pvi_num + seniority + chamber_f,
+  data   = treated_ey_model,
+  family = binomial
+)
+```
+
+```{r}
+#| label: tbl-models
+#| tbl-cap: "Logistic regression results for two primary outcome models. Coefficients are expressed as odds ratios with 95% confidence intervals. Cumulative attacks is the only variable with a consistent positive association across both outcomes, though both effects fall below the conventional p < 0.05 threshold. Cook PVI, seniority, and chamber show no meaningful association in either model."
+bind_rows(
+  tidy(m_challenge, conf.int = TRUE, exponentiate = TRUE) |>
+    mutate(Model = "Substantial challenge (≥ 25%)",
+           N     = nobs(m_challenge)),
+  tidy(m_lost, conf.int = TRUE, exponentiate = TRUE) |>
+    mutate(Model = "Lost primary",
+           N     = nobs(m_lost))
+) |>
+  filter(term != "(Intercept)") |>
+  mutate(
+    term = recode(term,
+      cumulative_attacks  = "Cumulative attacks",
+      cook_pvi_num        = "Cook PVI",
+      seniority           = "Seniority (years)",
+      chamber_fSenate     = "Senate (vs. House)"
+    ),
+    OR   = round(estimate,  2),
+    CI   = paste0("[", round(conf.low, 2), ", ", round(conf.high, 2), "]"),
+    p    = case_when(
+      p.value < 0.01  ~ "< 0.01",
+      p.value < 0.05  ~ "< 0.05",
+      p.value < 0.10  ~ "< 0.10",
+      TRUE            ~ as.character(round(p.value, 2))
+    )
+  ) |>
+  select(Model, N, Predictor = term, OR, `95% CI` = CI, p)
+```
+
+```{r}
+#| label: model-inline-stats
+or_challenge <- round(tidy(m_challenge, exponentiate = TRUE) |>
+  filter(term == "cumulative_attacks") |> pull(estimate), 2)
+p_challenge  <- round(tidy(m_challenge) |>
+  filter(term == "cumulative_attacks") |> pull(p.value), 3)
+
+or_lost <- round(tidy(m_lost, exponentiate = TRUE) |>
+  filter(term == "cumulative_attacks") |> pull(estimate), 2)
+p_lost  <- round(tidy(m_lost) |>
+  filter(term == "cumulative_attacks") |> pull(p.value), 3)
+```
+
+::: callout-caution
+Both models are substantially underpowered. With only 5 primary losses across 48 election-year rows, the lost-primary logit is near its minimum usable sample size. Confidence intervals are wide and point estimates are unstable. These results are best understood as a quantitative summary of the observed patterns rather than reliable causal estimates.
+:::
+
+## Sankey Diagram: Federal
+
+```{r}
+#| label: fig-sankey
+#| fig-cap: "Alluvial diagram tracing 23 federal officials from challenge severity to electoral outcome. Flows are colored by outcome: green = won primary, amber = retired, red = lost primary. All five primary losses originate exclusively from the 'Substantial' node; no official who avoided a substantial challenge lost their primary."
+#| fig-width: 7
+#| fig-height: 4.5
+
+# Per-official summary: ever faced substantial challenge? worst outcome?
+official_level <- cycle_panel |>
+  filter(is_treated == 1, !is.na(bioname)) |>
+  group_by(bioname) |>
+  summarise(
+    any_substantial = any(substantial_challenge == TRUE, na.rm = TRUE),
+    worst_outcome   = case_when(
+      any(outcome == "lost_primary", na.rm = TRUE) ~ "Lost primary",
+      any(outcome == "retired",      na.rm = TRUE) ~ "Retired",
+      any(outcome == "won_primary",  na.rm = TRUE) ~ "Won primary",
+      TRUE ~ NA_character_
+    ),
+    .groups = "drop"
+  ) |>
+  filter(!is.na(worst_outcome))
+
+# Helper used in subsequent chunk
+counts <- official_level |> count(any_substantial, worst_outcome)
+get_n  <- function(sub, out) {
+  v <- counts |> filter(any_substantial == sub, worst_outcome == out) |> pull(n)
+  if (length(v) == 0) 0L else v
+}
+n_substantial    <- sum(official_level$any_substantial)
+n_no_substantial <- sum(!official_level$any_substantial)
+
+# Build alluvial data frame
+alluvial_df <- official_level |>
+  mutate(
+    entry     = "Federal\nofficials",
+    challenge = factor(
+      if_else(any_substantial,
+              "Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)"),
+      levels = c("Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)")
+    ),
+    outcome = factor(
+      case_when(
+        worst_outcome == "Won primary"  ~ "Won\nprimary",
+        worst_outcome == "Lost primary" ~ "Lost\nprimary",
+        TRUE                            ~ worst_outcome
+      ),
+      levels = c("Won\nprimary", "Retired", "Lost\nprimary")
+    )
+  ) |>
+  count(entry, challenge, outcome, name = "freq")
+
+ggplot(alluvial_df,
+       aes(axis1 = entry, axis2 = challenge, axis3 = outcome, y = freq)) +
+  geom_alluvium(aes(fill = outcome), alpha = 0.72, width = 1/4) +
+  geom_stratum(width = 1/4, fill = "white", color = "grey40", linewidth = 0.4) +
+  geom_text(
+    stat = "stratum",
+    aes(label = paste0(after_stat(stratum), "\n(n = ", after_stat(count), ")")),
+    size = 3, lineheight = 1.1
+  ) +
+  scale_fill_manual(
+    values = c("Won\nprimary" = "#4dab6d", "Retired" = "#f4a942",
+               "Lost\nprimary" = "#c0392b"),
+    guide  = "none"
+  ) +
+  scale_x_discrete(
+    limits = c("entry", "challenge", "outcome"),
+    labels = c("Officials", "Primary challenge", "Outcome"),
+    expand = c(0.15, 0.15)
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid   = element_blank(),
+    axis.text.x  = element_text(face = "bold", size = 11),
+    plot.margin  = margin(5, 10, 5, 10)
+  ) +
+  labs(x = NULL, y = NULL)
+```
+
+```{r}
+#| label: sankey-counts
+n_sub_won     <- get_n(TRUE,  "Won primary")
+n_sub_ret     <- get_n(TRUE,  "Retired")
+n_sub_lost    <- get_n(TRUE,  "Lost primary")
+n_nosub_won   <- get_n(FALSE, "Won primary")
+n_nosub_ret   <- get_n(FALSE, "Retired")
+n_officials   <- nrow(official_level)
+```
+
+## Sankey: all levels
+
+```{r}
+#| label: load-state-outcomes
+state_outcomes_raw <- read_csv("state_officeholder_outcomes.csv",
+                               show_col_types = FALSE)
+
+state_for_combined <- state_outcomes_raw |>
+  mutate(
+    level     = "State/Local",
+    challenge = factor(
+      if_else(any_substantial, "Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)"),
+      levels = c("Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)")
+    ),
+    outcome_f = factor(
+      case_when(
+        worst_outcome == "Won primary"  ~ "Won\nprimary",
+        worst_outcome == "Lost primary" ~ "Lost\nprimary",
+        TRUE                            ~ "Retired"
+      ),
+      levels = c("Won\nprimary", "Retired", "Lost\nprimary")
+    )
+  )
+
+fed_for_combined <- official_level |>
+  mutate(
+    level     = "Federal",
+    challenge = factor(
+      if_else(any_substantial, "Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)"),
+      levels = c("Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)")
+    ),
+    outcome_f = factor(
+      case_when(
+        worst_outcome == "Won primary"  ~ "Won\nprimary",
+        worst_outcome == "Lost primary" ~ "Lost\nprimary",
+        TRUE                            ~ "Retired"
+      ),
+      levels = c("Won\nprimary", "Retired", "Lost\nprimary")
+    )
+  )
+
+combined_long <- bind_rows(
+  fed_for_combined   |> select(level, challenge, outcome_f),
+  state_for_combined |> select(level, challenge, outcome_f)
+) |>
+  mutate(level = factor(level, levels = c("Federal", "State/Local")))
+```
+
+```{r}
+#| label: combined-sankey-stats
+get_cn <- function(sub, out, df = combined_long) {
+  v <- df |>
+    filter(
+      (challenge == "Substantial\n(\u2265 25%)") == sub,
+      outcome_f == out
+    ) |>
+    nrow()
+  v
+}
+
+n_combined_total    <- nrow(combined_long)
+n_combined_sub      <- sum(combined_long$challenge == "Substantial\n(\u2265 25%)")
+n_combined_nosub    <- n_combined_total - n_combined_sub
+n_csub_lost         <- get_cn(TRUE,  "Lost\nprimary")
+n_csub_won          <- get_cn(TRUE,  "Won\nprimary")
+n_csub_ret          <- get_cn(TRUE,  "Retired")
+n_cnosub_lost       <- get_cn(FALSE, "Lost\nprimary")
+n_cnosub_won        <- get_cn(FALSE, "Won\nprimary")
+n_cnosub_ret        <- get_cn(FALSE, "Retired")
+```
+
+```{r}
+#| label: fig-sankey-combined
+#| fig-cap: "Alluvial diagram tracing 49 officeholders (23 federal, 26 state/local) from governmental level through primary challenge severity to electoral outcome. Flows are colored by outcome: green = won primary, amber = retired, red = lost primary. All 17 primary losses originate exclusively from the Substantial challenge node. No official who avoided a substantial challenge lost their primary, regardless of level."
+#| fig-width: 8
+#| fig-height: 5
+
+combined_alluvial <- combined_long |>
+  count(level, challenge, outcome_f, name = "freq")
+
+ggplot(combined_alluvial,
+       aes(axis1 = level, axis2 = challenge, axis3 = outcome_f, y = freq)) +
+  geom_alluvium(aes(fill = outcome_f), alpha = 0.72, width = 1/4) +
+  geom_stratum(width = 1/4, fill = "white", color = "grey40", linewidth = 0.4) +
+  geom_text(
+    stat = "stratum",
+    aes(label = paste0(after_stat(stratum), "\n(n = ", after_stat(count), ")")),
+    size = 3.8, lineheight = 1.1
+  ) +
+  scale_fill_manual(
+    values = c("Won\nprimary" = "#4dab6d", "Retired" = "#f4a942",
+               "Lost\nprimary" = "#c0392b"),
+    guide  = "none"
+  ) +
+  scale_x_discrete(
+    limits = c("level", "challenge", "outcome_f"),
+    labels = c("Level", "Primary challenge", "Outcome"),
+    expand = c(0.15, 0.15)
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid   = element_blank(),
+    axis.text.x  = element_text(face = "bold", size = 11),
+    plot.margin  = margin(5, 10, 5, 10)
+  ) +
+  labs(x = NULL, y = NULL)
+```

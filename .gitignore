@@ -1,0 +1,27 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.posit/
+.quarto/
+.DS_Store
+
+# Large / rebuildable data
+fec_bulk/
+rdit_dataset.csv
+voteview_members.csv
+
+# Rendered output and caches
+*.html
+*.pdf
+*_files/
+*_cache/
+figure/
+figures/
+
+# Word / RTF / zip working files
+*.docx
+*.rtf
+*.zip
+from_drive/
+_extensions/christopherkenny/ctk-article-main/

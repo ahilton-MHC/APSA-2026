@@ -1,0 +1,83 @@
+bioguide_id,bioname,state,chamber,cycle,attack_count_quarter,cook_pvi_num,seniority,primary_challenger_entry,incumbent_retired,primary_victory,is_election_year,primary_opponent_vote_share,substantial_challenge,outcome,source
+S001197,Ben Sasse,NE,1,2020,1,10,4,1,0,1,TRUE,0.23,FALSE,won_primary,"NE SOS May 2020: Sasse ~77%, Innis ~23% (The Hill/AP)"
+S001197,Ben Sasse,NE,1,2022,1,10,6,1,0,0,FALSE,,,retired,Resigned Jan 2023 to lead U of FL
+C001075,Bill Cassidy,LA,1,2020,0,11,4,1,0,1,TRUE,0,FALSE,won_primary,LA Nov 2020 jungle primary: Cassidy won 59% outright; no separate R primary challenge
+C001075,Bill Cassidy,LA,1,2022,1,11,6,0,0,1,FALSE,,,,
+C001075,Bill Cassidy,LA,1,2024,0,11,8,0,0,1,FALSE,,,,
+C001075,Bill Cassidy,LA,1,2026,0,11,10,1,0,,TRUE,0.448,TRUE,lost_primary,"LA SOS May 16, 2026: Letlow 44.8%, Fleming 28.3%, Cassidy 24.8%"
+R000614,Chip Roy,TX,0,2020,0,11,0,0,0,1,TRUE,0,FALSE,won_primary,Ballotpedia: uncontested (no Republican opponent filed)
+R000614,Chip Roy,TX,0,2022,0,11,2,1,0,1,TRUE,,,won_primary,Ballotpedia: beat Lowry/Zavorka/French; exact shares need TX SOS
+R000614,Chip Roy,TX,0,2024,1,11,4,0,0,1,TRUE,0,FALSE,won_primary,Ballotpedia: uncontested
+R000614,Chip Roy,TX,0,2026,0,11,6,0,0,,TRUE,,,retired,Ran for TX AG (lost runoff May 2026); vacated House seat
+N000189,Dan Newhouse,WA,0,2020,0,10,4,1,0,1,TRUE,,,won_primary,WA SOS 2020 top-2: advanced; exact share needs verification
+N000189,Dan Newhouse,WA,0,2022,0,10,6,1,0,1,TRUE,0.219,FALSE,won_primary,WA SOS 2022 top-2 (Kent 21.9%)
+N000189,Dan Newhouse,WA,0,2024,2,10,8,1,0,1,TRUE,0.193,FALSE,won_primary,WA SOS 2024 top-2
+N000189,Dan Newhouse,WA,0,2026,0,10,10,1,0,,TRUE,,,retired,"Announced retirement Dec 17, 2025; did not seek 7th term"
+U000031,Fred Upton,MI,0,2020,0,-12,32,0,0,1,TRUE,,,won_primary,MI SOS 2020: won primary; share needs verification
+U000031,Fred Upton,MI,0,2022,1,-12,34,0,0,0,TRUE,,,retired,Did not file for re-election
+H001100,Jeff Hurd,CO,0,2026,1,5,0,0,0,,TRUE,0.33,TRUE,won_primary,"CO SOS June 30, 2026: Hanks ~33%"
+,Joe O'Dea,,,2020,0,-6,0,,,,,,,,
+,Joe O'Dea,,,2022,1,-6,0,,,,,,,,
+,Joe O'Dea,,,2024,0,-6,0,,,,,,,,
+,Joe O'Dea,,,2026,0,-6,0,,,,,,,,
+C001056,John Cornyn,TX,1,2020,0,6,16,1,0,1,TRUE,0.16,FALSE,won_primary,"TX March 2020 primary: Cornyn ~76%, Stovall ~16% estimated — verify TX SOS"
+C001056,John Cornyn,TX,1,2022,1,6,18,1,0,1,FALSE,,,,
+C001056,John Cornyn,TX,1,2024,0,6,20,1,0,1,FALSE,,,,
+C001056,John Cornyn,TX,1,2026,0,6,22,1,0,,TRUE,0.638,TRUE,lost_primary,"TX runoff May 26, 2026: Paxton 63.8%; first-round Paxton 41%"
+T000250,John Thune,SD,1,2020,1,15,14,1,0,1,FALSE,,,,
+T000250,John Thune,SD,1,2022,1,15,16,1,0,1,TRUE,0,FALSE,won_primary,Uncontested
+T000250,John Thune,SD,1,2024,0,15,18,0,0,1,FALSE,,,,
+T000250,John Thune,SD,1,2026,0,15,20,1,0,,FALSE,,,,
+,Kelly Daughtry,,,2020,0,-23,0,,,,,,,,
+,Kelly Daughtry,,,2022,0,-23,0,,,,,,,,
+,Kelly Daughtry,,,2024,2,-23,0,,,,,,,,
+,Kelly Daughtry,,,2026,0,-23,0,,,,,,,,
+B001297,Ken Buck,CO,0,2020,0,9,4,1,0,1,TRUE,0,FALSE,won_primary,Ballotpedia: uncontested
+B001297,Ken Buck,CO,0,2022,0,9,6,1,0,1,TRUE,0.256,TRUE,won_primary,CO SOS 2022: Robert Lewis 25.62%
+B001297,Ken Buck,CO,0,2024,1,9,8,0,1,,TRUE,,,retired,Resigned Mar 2024
+,Larry Hogan,,,2020,1,-15,0,,,,,,,,
+,Larry Hogan,,,2022,4,-15,0,,,,,,,,
+,Larry Hogan,,,2024,0,-15,0,,,,,,,,
+,Larry Hogan,,,2026,0,-15,0,,,,,,,,
+M001153,Lisa Murkowski,AK,1,2020,0,6,16,0,0,1,FALSE,,,,
+M001153,Lisa Murkowski,AK,1,2022,1,6,18,1,0,1,TRUE,0.44,TRUE,won_primary,AK SOS 2022 (Tshibaka 44%; Murkowski won RCV general)
+M001153,Lisa Murkowski,AK,1,2024,0,6,20,1,0,1,FALSE,,,,
+M001153,Lisa Murkowski,AK,1,2026,0,6,22,1,0,,FALSE,,,,
+C001109,Liz Cheney,WY,0,2020,0,23,2,0,0,1,TRUE,0.265,TRUE,won_primary,"WY SOS Aug 2020: Cheney ~73.5%, Stanley ~26.5% (Grokipedia/multiple sources)"
+C001109,Liz Cheney,WY,0,2022,1,23,4,0,1,,TRUE,0.671,TRUE,lost_primary,WY SOS 2022 (Hageman 66.9%)
+G000596,Marjorie Taylor Greene,GA,0,2022,0,19,0,1,0,1,TRUE,0.17,FALSE,won_primary,"GA SOS May 2022: MTG >70%, 5 challengers combined ~28%; Strahan top at ~17% estimated — verify GA SOS"
+G000596,Marjorie Taylor Greene,GA,0,2024,0,19,2,1,0,1,TRUE,0,FALSE,won_primary,Ballotpedia: uncontested
+G000596,Marjorie Taylor Greene,GA,0,2026,1,19,4,1,1,,TRUE,,,retired,Resigned from Congress 2026 (Wikipedia/PBS)
+M000355,Mitch McConnell,KY,1,2020,0,15,34,1,0,1,TRUE,0.152,FALSE,won_primary,KY SOS 2020
+M000355,Mitch McConnell,KY,1,2022,2,15,36,1,0,1,FALSE,,,,
+M000355,Mitch McConnell,KY,1,2024,1,15,38,1,0,1,FALSE,,,,
+M000355,Mitch McConnell,KY,1,2026,0,15,40,1,0,,TRUE,,,retired,Announced would not seek re-election in 2026
+R000615,Mitt Romney,UT,1,2020,1,11,0,1,0,1,FALSE,,,,
+R000615,Mitt Romney,UT,1,2022,1,11,2,1,0,1,FALSE,,,,
+R000615,Mitt Romney,UT,1,2024,1,11,4,1,0,0,TRUE,,,retired,Did not seek re-election
+M000194,Nancy Mace,SC,0,2022,1,6,0,1,0,1,TRUE,0.261,TRUE,won_primary,SC SOS 2022 (Arrington 26.1%)
+M000194,Nancy Mace,SC,0,2024,0,6,2,1,0,1,TRUE,0.112,FALSE,won_primary,SC SOS 2024
+M000194,Nancy Mace,SC,0,2026,0,6,4,1,0,,TRUE,,,retired,Ran for SC governor (June 2026); vacated House seat
+T000461,Pat Toomey,PA,1,2020,1,1,8,1,0,1,FALSE,,,,
+T000461,Pat Toomey,PA,1,2022,1,1,10,1,0,0,TRUE,,,retired,Did not seek re-election
+R000618,Pete Ricketts,NE,1,2024,0,10,0,1,0,1,TRUE,,,won_primary,Verify NE SOS 2024
+R000618,Pete Ricketts,NE,1,2026,0,10,2,1,0,,TRUE,,,won_primary,NE May 2026: won primary; exact share needs NE SOS verification
+M001186,Peter Meijer,MI,0,2022,1,-4,0,0,0,0,TRUE,0.529,TRUE,lost_primary,MI SOS 2022 (Gibbs 52.9%)
+B001135,Richard Burr,NC,1,2020,0,1,14,1,0,1,FALSE,,,,
+B001135,Richard Burr,NC,1,2022,1,1,16,1,0,0,TRUE,,,retired,Did not seek re-election
+C001035,Susan Collins,ME,1,2020,0,-4,22,1,0,1,TRUE,0,FALSE,won_primary,Uncontested
+C001035,Susan Collins,ME,1,2022,1,-4,24,0,0,1,FALSE,,,,
+C001035,Susan Collins,ME,1,2024,0,-4,26,1,0,1,FALSE,,,,
+C001035,Susan Collins,ME,1,2026,0,-4,28,1,0,,TRUE,0,FALSE,won_primary,"ME June 9, 2026: Collins ran uncontested in Republican primary"
+M001184,Thomas Massie,KY,0,2020,0,18,8,1,0,1,TRUE,0.249,FALSE,won_primary,KY SOS 2020
+M001184,Thomas Massie,KY,0,2022,0,18,10,1,0,1,TRUE,,FALSE,won_primary,"KY SOS May 17, 2022: won easily; Massie confirmed 'none busted 25%' (X post, 2026)"
+M001184,Thomas Massie,KY,0,2024,0,18,12,0,0,1,TRUE,,FALSE,won_primary,"KY SOS May 21, 2024: ~75% per Massie; challengers <25% confirmed by Massie"
+M001184,Thomas Massie,KY,0,2026,5,18,14,1,0,,TRUE,0.544,TRUE,lost_primary,"KY SOS May 19, 2026: Gallrein 54.4%"
+Y000064,Todd Young,IN,1,2020,0,9,2,1,0,1,FALSE,,,,
+Y000064,Todd Young,IN,1,2022,1,9,4,1,0,1,TRUE,0,FALSE,won_primary,"IN May 2022: Young ran unopposed (NBC News, Ballotpedia)"
+Y000064,Todd Young,IN,1,2024,0,9,6,1,0,1,FALSE,,,,
+Y000064,Todd Young,IN,1,2026,0,9,8,1,0,,FALSE,,,,
+E000294,Tom Emmer,MN,0,2020,0,10,4,1,0,1,TRUE,0,FALSE,won_primary,Ballotpedia: Republican primary canceled — no opponent
+E000294,Tom Emmer,MN,0,2022,0,10,6,1,0,1,TRUE,0,FALSE,won_primary,Ballotpedia: Republican primary canceled — no opponent
+E000294,Tom Emmer,MN,0,2024,1,10,8,1,0,1,TRUE,0.128,FALSE,won_primary,Ballotpedia/FOX9: Corey 12.8%
+E000294,Tom Emmer,MN,0,2026,0,10,10,1,0,,TRUE,0.153,FALSE,won_primary,"MN SOS Aug 11, 2026 (100% in): Emmer 80.9%, Foley 15.3%, Corey 3.8%"

@@ -1,0 +1,75 @@
+---
+title: "RINO Nominate Scores"
+format: 
+  typst
+execute: 
+  warning: false
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Setup
+
+```{r}
+#| label: setup
+
+library(tidyverse)
+library(devtools)
+#library(Rvoteview)
+
+```
+
+## Import data
+
+```{r}
+rinos_ideology <- read_csv("~/Desktop/Desktop/Conferences/APSA 2026/rinos_ideology.csv")
+```
+
+The relationship between a member's ideology and their district's partisanship reveals whether Trump's RINO labels track genuine moderation or something else. @fig-ideology-pvi plots each labeled member's DW-NOMINATE first-dimension score (career voting ideology) against the Cook PVI of their district or state.
+
+```{r}
+#| label: fig-ideology-pvi
+#| fig-cap: "RINO-labeled federal officials: DW-NOMINATE Dim 1 vs. district partisanship."
+#| warning: false
+library(ggplot2)
+library(ggrepel)
+
+ggplot(rinos_ideology, aes(x = cook_pvi_num, y = nominate_dim1)) +
+  geom_smooth(method = "lm", se = TRUE, color = "gray60", linewidth = 0.7) +
+  geom_point(aes(shape = chamber), size = 2.5) +
+  geom_text_repel(aes(label = officeholder), size = 3, max.overlaps = 20,
+                  segment.color = "gray70") +
+  scale_shape_manual(values = c(House = 16, Senate = 17)) +
+  labs(
+    x = "Cook PVI (more positive = more Republican district/state)",
+    y = "DW-NOMINATE Dim 1 (more positive = more conservative)",
+    shape = "Chamber"
+  )
+```
+
+The trend line is nearly flat, indicating that district partisanship does not systematically predict who receives a RINO label. Two distinct subgroups are visible. Genuinely moderate members---Collins, Murkowski, and Romney---have relatively low ideology scores and fall below the trend line, meaning they are more moderate than even their competitive states would predict. By contrast, highly conservative members such as MTG, Ken Buck, and Chip Roy sit well above the trend despite representing competitive or blue-leaning districts, suggesting their RINO labels reflect personal loyalty conflicts with Trump rather than ideological moderation. **This heterogeneity complicates treating the RINO label as a clean proxy for ideological deviance from the Republican mainstream.**
+
+The relationship between a member's second-dimension ideology and their district's partisanship sheds light on whether RINO labels track a distinct cross-cutting dimension of congressional behavior. @fig-ideology-pvi-dim2 plots each labeled member's DW-NOMINATE second-dimension score against the Cook PVI of their district or state. In the modern Congress, Dim 2 is broadly interpreted as capturing hawkish/establishment conservatism versus libertarian or anti-establishment positioning, though its meaning is less settled than Dim 1.
+
+```{r}
+#| label: fig-ideology-pvi-dim2
+#| fig-cap: "RINO-labeled federal officials: DW-NOMINATE Dim 2 vs. district partisanship."
+#| warning: false
+library(ggplot2)
+library(ggrepel)
+
+ggplot(rinos_ideology, aes(x = cook_pvi_num, y = nominate_dim2)) +
+  geom_smooth(method = "lm", se = TRUE, color = "gray60", linewidth = 0.7) +
+  geom_point(aes(shape = chamber), size = 2.5) +
+  geom_text_repel(aes(label = officeholder), size = 3, max.overlaps = 20,
+                  segment.color = "gray70") +
+  scale_shape_manual(values = c(House = 16, Senate = 17)) +
+  labs(
+    x = "Cook PVI (more positive = more Republican district/state)",
+    y = "DW-NOMINATE Dim 2 (more positive = more hawkish/establishment)",
+    shape = "Chamber"
+  )
+```
+
+As with Dim 1, the trend line is nearly flat, and district partisanship offers little explanatory leverage over who receives a RINO label. The spread along Dim 2 is wide and reveals a more complex pattern than Dim 1. Liz Cheney is a pronounced outlier at the positive extreme---her score of 0.82 reflects her hawkish foreign policy record, making her ideologically distinctive from nearly every other labeled member. At the negative end, the populist-libertarian wing (Massie, MTG, Roy) clusters together, consistent with their anti-establishment voting records. Notably, moderates such as Collins and Murkowski also score relatively low on Dim 2, placing them closer on this dimension to MAGA members than to establishment figures like Cheney, Romney, or Thune---an unexpected alignment that underscores how Dim 2 does not map cleanly onto the moderate-versus-conservative distinction. Overall, the RINO-labeled members are not a coherent group on Dim 2 either, spanning nearly the full range of the dimension. This reinforces the conclusion from Dim 1: **Trump's RINO labels appear to target members for heterogeneous reasons, rather than tracking any single ideological axis.**

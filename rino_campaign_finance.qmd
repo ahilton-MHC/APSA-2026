@@ -1,0 +1,558 @@
+---
+title: "RINO Labels and Republican Fundraising"
+subtitle: "Descriptive patterns in FEC data around Trump's RINO attacks on federal officeholders, 2020–2026"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    toc-title: "Contents"
+    code-fold: true
+    code-summary: "Show code"
+    theme: cosmo
+    embed-resources: true
+    fig-dpi: 150
+  typst:
+    default
+execute:
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(tidyverse)
+library(scales)
+
+rdit  <- read_csv("rdit_dataset.csv",               show_col_types = FALSE)
+meta  <- read_csv("rino_officeholder_metadata.csv", show_col_types = FALSE)
+posts <- read_csv("rino_posts.csv",                 show_col_types = FALSE)
+
+# Treated officials only; exclude those with no federal committee (Hogan, O'Dea, Ricketts)
+df <- rdit |>
+  filter(is_treated == 1, !is.na(daily_total_receipts)) |>
+  mutate(
+    log_total  = log1p(daily_total_receipts),
+    post_attack = as.integer(post_attack)
+  )
+
+# Flag officials whose committee was entirely dormant during their attack window
+dormant <- df |>
+  group_by(officeholder) |>
+  summarise(has_receipts = any(daily_total_receipts > 0), .groups = "drop") |>
+  filter(!has_receipts) |>
+  pull(officeholder)
+
+# Active sample: officials with at least some fundraising activity
+df_active <- df |> filter(!officeholder %in% dormant)
+
+# Small-dollar analysis samples (WinRed conduit)
+treated_active <- rdit |>
+  filter(is_treated == 1, !is.na(daily_small_dollar_receipts)) |>
+  group_by(officeholder) |>
+  filter(any(daily_total_receipts > 0 | daily_small_dollar_receipts > 0)) |>
+  ungroup()
+
+sd_active <- treated_active |>
+  group_by(officeholder) |>
+  filter(any(daily_small_dollar_receipts > 0)) |>
+  ungroup()
+```
+
+## Background
+
+Since 2020, Donald Trump has repeatedly used social media and public appearances to label Republican officeholders as "RINOs" — Republicans In Name Only. These attacks could theoretically affect a target's fundraising in either direction: a RINO label from the former president might depress donations from Trump-aligned grassroots donors, or it might trigger a backlash rally among the target's existing supporters.
+
+This document examines whether there is any observable association between Trump's RINO attacks and changes in the daily campaign fundraising of targeted federal officeholders, using FEC contribution records in the 60-day window (±30 days) surrounding each attack. No causal claims are made; the comparison group is each official's own pre-attack fundraising, not a matched counterfactual.
+
+## Data
+
+### RINO attack events
+
+Treatment events come from a hand-curated dataset of posts in which Trump publicly labeled a sitting or former federal officeholder as a RINO, from March 2020 through June 2026.
+
+```{r}
+#| label: tbl-posts
+#| tbl-cap: "RINO attack posts targeting federal officeholders, by platform."
+
+posts |>
+  # keep only posts that appear in the rdit dataset (federal officeholders)
+  filter(officeholder %in% unique(rdit$officeholder[rdit$is_treated == 1])) |>
+  distinct(post_id, platform) |>
+  count(platform) |>
+  arrange(desc(n)) |>
+  rename(Platform = platform, Posts = n) |>
+  knitr::kable()
+```
+
+### FEC fundraising data
+
+Daily fundraising is measured as all itemized Schedule A individual contributions to each official's principal campaign committee on a given day — every donation of \$200 or more reported to the FEC. For each attack, a ±30-day calendar window is constructed around the attack date.
+
+::: callout-note
+## Coverage
+
+Of the 26 federal officeholders labeled RINO in this dataset:
+
+- **3 excluded entirely** (Larry Hogan, Pete Ricketts, Joe O'Dea): no active federal campaign committee at the time of their attacks.
+- **5 included but with zero receipts** throughout their attack window (`r paste(sort(dormant), collapse = ", ")`): their committees were dormant by the time of the attack — consistent with announced retirements or, in the case of Tom Emmer, a very brief window before a leadership race. These officials are included in summary tables but excluded from fundraising visualizations.
+- **18 officials** have at least some itemized fundraising activity in their attack window and form the core of the analysis below.
+
+Daily small-dollar receipts via WinRed (the small-donor conduit PAC C00694323) are now available in the dataset. Small-dollar figures are analyzed separately in the [Small-dollar fundraising](#sec-small-dollar) section below.
+:::
+
+```{r}
+#| label: tbl-sample
+#| tbl-cap: "Attack windows for the 23 treated officials with FEC data. Each row is one official × attack event. Pre- and post-attack means are computed over days −30 to −1 and days 1 to 30, respectively."
+
+df |>
+  group_by(officeholder, post_id, attack_date) |>
+  summarise(
+    pre_mean  = mean(daily_total_receipts[post_attack == 0], na.rm = TRUE),
+    post_mean = mean(daily_total_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  left_join(meta |> select(officeholder, chamber), by = "officeholder") |>
+  mutate(
+    dormant = officeholder %in% dormant,
+    change  = post_mean - pre_mean,
+    pct_chg = if_else(pre_mean > 0, (post_mean - pre_mean) / pre_mean, NA_real_)
+  ) |>
+  arrange(chamber, officeholder, attack_date) |>
+  select(
+    Officeholder = officeholder,
+    Chamber      = chamber,
+    `Attack date` = attack_date,
+    `Pre mean ($/day)` = pre_mean,
+    `Post mean ($/day)` = post_mean,
+    `Change ($/day)` = change,
+    `% change` = pct_chg,
+    Dormant = dormant
+  ) |>
+  mutate(
+    across(c(`Pre mean ($/day)`, `Post mean ($/day)`, `Change ($/day)`),
+           ~ dollar(round(.x))),
+    `% change` = if_else(is.na(`% change`), "—",
+                         percent(`% change`, accuracy = 1))
+  ) |>
+  knitr::kable()
+```
+
+## Fundraising around attack events
+
+### Event study
+
+@fig-event-study shows mean daily receipts (log scale) for the 18 officials with active fundraising, pooling all attack windows and averaging by days from attack date. Day 0 is the attack date itself.
+
+```{r}
+#| label: fig-event-study
+#| fig-cap: "Mean log(1 + daily receipts) by days from attack, pooling all attack windows for 18 actively fundraising officials. Each day's value is the unweighted mean across all official × attack combinations present on that day. The dashed vertical line marks day 0 (attack date)."
+#| fig-height: 4
+
+df_active |>
+  group_by(days_from_attack) |>
+  summarise(mean_log = mean(log_total), .groups = "drop") |>
+  ggplot(aes(x = days_from_attack, y = mean_log)) +
+  geom_line(linewidth = 0.8, color = "#2C3E50") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  annotate("text", x = 1, y = Inf,
+    label = "Attack date", vjust = 1.5, hjust = 0, size = 3, color = "grey40") +
+  labs(
+    x = "Days from attack (0 = attack date)",
+    y = "Mean log(1 + daily receipts, $)"
+  ) +
+  theme_minimal() +
+  geom_smooth(se = F)
+```
+
+### Comparison with matched non-RINO officeholders
+
+@fig-event-study-comparison adds the matched control group — 235 Republican House and Senate members matched to the treated officials on chamber, Cook PVI, election cycle, and seniority — assigned the same pseudo-attack dates as their matched treated counterparts.
+
+```{r}
+#| label: fig-event-study-comparison
+#| fig-cap: "Mean log(1 + daily receipts) by days from attack, for RINO-labeled officials (n = 23) and matched controls (n = 235). Both groups are assigned the same attack date: treated officials' actual attack date, and for controls, the corresponding matched treated official's attack date. Day 0 is the attack date."
+#| fig-height: 4
+
+rdit |>
+  filter(!is.na(daily_total_receipts)) |>
+  mutate(
+    log_total = log1p(daily_total_receipts),
+    Group = if_else(is_treated == 1, "RINO-labeled", "Matched controls")
+  ) |>
+  group_by(days_from_attack, Group) |>
+  summarise(mean_log = mean(log_total), .groups = "drop") |>
+  ggplot(aes(x = days_from_attack, y = mean_log, color = Group)) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  annotate("text", x = 1, y = Inf, label = "Attack date",
+           vjust = 1.5, hjust = 0, size = 3, color = "grey40") +
+  scale_color_manual(
+    values = c("RINO-labeled" = "#C0392B", "Matched controls" = "grey8")
+  ) +
+  labs(
+    x     = "Days from attack (0 = attack date)",
+    y     = "Mean log(1 + daily receipts, $)",
+    color = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  geom_smooth(se = F, linewidth = 0.5)
+```
+
+Two things stand out. First, RINO-labeled officials raise substantially more on average throughout the window — a level difference that reflects selection, not treatment. The officials Trump chose to call RINOs are systematically more prominent than a typical matched control: Liz Cheney, Mitch McConnell, and Thomas Massie are not comparable in fundraising terms to the average Republican House member of similar seniority and district partisanship.
+
+Second, the control series is essentially flat across the window, while the treated series shows a visible dip beginning just before day 0 and continuing into the post-attack period. Whether this dip reflects the attack itself, anticipatory effects, or events coinciding with the attack (e.g., major votes that preceded many RINO labels) cannot be determined from this comparison alone.
+
+### Pre- vs. post-attack change, by official
+
+@fig-per-official shows the change in mean daily receipts from the 30 days before to the 30 days after each attack, for each official's most recent attack event. Officials are ordered by the magnitude of change within chamber.
+
+```{r}
+#| label: fig-per-official
+#| fig-cap: "Pre- to post-attack change in mean daily receipts (post mean minus pre mean), by official. Each bar represents one official's most recent attack event. Positive values = receipts rose after the attack; negative = fell. Officials with entirely dormant committees are excluded."
+#| fig-height: 6
+
+# Use each official's most recent attack for the per-official plot
+per_official <- df_active |>
+  # for officials with multiple attacks, use the most recent
+  group_by(officeholder) |>
+  filter(attack_date == max(attack_date)) |>
+  ungroup() |>
+  group_by(officeholder) |>
+  summarise(
+    pre_mean  = mean(daily_total_receipts[post_attack == 0], na.rm = TRUE),
+    post_mean = mean(daily_total_receipts[post_attack == 1], na.rm = TRUE),
+    chamber   = first(left_join(
+      tibble(officeholder = officeholder[1]),
+      meta |> select(officeholder, chamber), by = "officeholder"
+    )$chamber),
+    .groups = "drop"
+  ) |>
+  mutate(change = post_mean - pre_mean)
+
+# Attach chamber from meta directly
+per_official <- df_active |>
+  group_by(officeholder) |>
+  filter(attack_date == max(attack_date)) |>
+  ungroup() |>
+  group_by(officeholder) |>
+  summarise(
+    pre_mean  = mean(daily_total_receipts[post_attack == 0], na.rm = TRUE),
+    post_mean = mean(daily_total_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  left_join(meta |> select(officeholder, chamber), by = "officeholder") |>
+  mutate(change = post_mean - pre_mean)
+
+per_official |>
+  mutate(
+    direction = if_else(change >= 0, "Increase", "Decrease"),
+    label     = fct_reorder(officeholder, change)
+  ) |>
+  ggplot(aes(x = change, y = label, fill = direction)) +
+  geom_col() +
+  geom_vline(xintercept = 0, color = "grey30") +
+  facet_wrap(~chamber, scales = "free_y", ncol = 1) +
+  scale_fill_brewer(palette = "Dark2", direction = -1) +
+  scale_x_continuous(labels = dollar) +
+  labs(
+    x    = "Change in mean daily receipts (post − pre, $)",
+    y    = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom", strip.text = element_text(face = "bold"))
+```
+
+### Distribution of pre/post changes across all attack events
+
+@fig-change-distribution shows the distribution of per-event pre/post changes across all 61 attack windows, regardless of official. This captures officials with multiple attacks as multiple observations.
+
+```{r}
+#| label: fig-change-distribution
+#| fig-cap: "Distribution of pre-to-post changes in mean daily receipts across all attack event windows (23 officials). Each observation is one official × attack event. The dashed line marks zero; values to the right indicate fundraising rose after the attack."
+#| fig-height: 3.5
+
+all_windows <- df |>
+  group_by(officeholder, post_id, attack_date) |>
+  summarise(
+    pre_mean  = mean(daily_total_receipts[post_attack == 0], na.rm = TRUE),
+    post_mean = mean(daily_total_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(change = post_mean - pre_mean)
+
+ggplot(all_windows, aes(x = change)) +
+  geom_histogram(bins = 30, fill = "grey60", color = "white") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "#C0392B",
+             linewidth = 0.9) +
+  scale_x_continuous(labels = dollar) +
+  labs(
+    x = "Change in mean daily receipts (post − pre, $)",
+    y = "Attack windows"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: inline-direction-counts
+#| include: false
+
+n_pos  <- sum(all_windows$change > 0, na.rm = TRUE)
+n_neg  <- sum(all_windows$change < 0, na.rm = TRUE)
+n_zero <- sum(all_windows$change == 0, na.rm = TRUE)
+n_tot  <- nrow(all_windows)
+
+med_change <- median(all_windows$change, na.rm = TRUE)
+```
+
+Across all `r n_tot` attack windows, `r n_neg` show a decline in mean daily receipts, `r n_pos` show an increase, and `r n_zero` are exactly zero (dormant committees). The median change is `r dollar(round(med_change))` per day.
+
+## Summary by official
+
+```{r}
+#| label: tbl-official-summary
+#| tbl-cap: "Per-official summary across all attack events. For officials with multiple attacks, pre- and post-attack means and the net change are averaged across events. Positive net change = receipts rose on average after attacks; negative = fell."
+
+df |>
+  group_by(officeholder, post_id) |>
+  summarise(
+    pre  = mean(daily_total_receipts[post_attack == 0], na.rm = TRUE),
+    post = mean(daily_total_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  group_by(officeholder) |>
+  summarise(
+    `Attacks` = n(),
+    `Pre mean ($/day)`  = mean(pre,  na.rm = TRUE),
+    `Post mean ($/day)` = mean(post, na.rm = TRUE),
+    `Net change ($/day)` = mean(post - pre, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  left_join(meta |> select(officeholder, chamber), by = "officeholder") |>
+  mutate(dormant_flag = officeholder %in% dormant) |>
+  arrange(chamber, `Net change ($/day)`) |>
+  mutate(
+    across(c(`Pre mean ($/day)`, `Post mean ($/day)`, `Net change ($/day)`),
+           ~ dollar(round(.x)))
+  ) |>
+  select(
+    Officeholder = officeholder,
+    Chamber = chamber,
+    Attacks,
+    `Pre mean ($/day)`,
+    `Post mean ($/day)`,
+    `Net change ($/day)`,
+    `Dormant committee` = dormant_flag
+  ) |>
+  knitr::kable()
+```
+
+## Small-dollar fundraising {#sec-small-dollar}
+
+Small-dollar receipts — individual WinRed contributions routed through the conduit PAC (C00694323) and earmarked to each official's committee — are a qualitatively distinct signal from itemized large-dollar donations. Grassroots small-dollar donors are the demographic most likely to be mobilized (or alienated) by a Trump social media post. If there is a fundraising effect of RINO attacks, it is more likely to show up here than in large checks from established donors.
+
+### Event study: small-dollar vs. large-dollar
+
+@fig-sd-event-study plots mean log-receipts by days from attack for both donation channels among the `r n_distinct(treated_active$officeholder)` actively fundraising treated officials.
+
+```{r}
+#| label: fig-sd-event-study
+#| fig-cap: "Mean log(1 + daily receipts) by days from attack, separately for large-dollar (itemized ≥ $200) and small-dollar (WinRed conduit) channels. Pooled across all attack windows for actively fundraising treated officials. Day 0 is the attack date."
+#| fig-height: 4
+
+treated_active |>
+  group_by(days_from_attack) |>
+  summarise(
+    `Large-dollar (≥$200 itemized)` = mean(log1p(daily_total_receipts)),
+    `Small-dollar (WinRed)`         = mean(log1p(daily_small_dollar_receipts)),
+    .groups = "drop"
+  ) |>
+  pivot_longer(-days_from_attack, names_to = "Channel", values_to = "mean_log") |>
+  ggplot(aes(x = days_from_attack, y = mean_log, color = Channel)) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  annotate("text", x = 1, y = Inf, label = "Attack date",
+           vjust = 1.5, hjust = 0, size = 3, color = "grey40") +
+  scale_color_manual(
+    values = c("Large-dollar (≥$200 itemized)" = "#2980B9",
+               "Small-dollar (WinRed)"         = "#C0392B")
+  ) +
+  labs(
+    x     = "Days from attack (0 = attack date)",
+    y     = "Mean log(1 + daily receipts, $)",
+    color = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  geom_smooth(se = F, linewidth = 0.5, alpha = 0.5)
+```
+
+The two channels tell a broadly similar story: fundraising is somewhat higher around the attack date than in the post-attack period, with no sharp discrete break at day 0. The large-dollar channel dominates both in level and in day-to-day volatility. On the log scale, small-dollar receipts are lower on average but follow a comparable arc.
+
+One pattern worth noting: day +1 (the day immediately following the attack) shows a noticeable spike in mean small-dollar receipts — \$931/day versus a baseline of roughly \$200–\$300/day in the surrounding days. This is consistent with a brief grassroots donor response to news of the attack, though the spike does not persist beyond day +1 and the signal is noisy given the small number of officials with active small-dollar programs.
+
+### Small-dollar pre/post change, by official
+
+@tbl-sd-per-official summarizes the pre- and post-attack means for the small-dollar channel by official.
+
+```{r}
+#| label: tbl-sd-per-official
+#| tbl-cap: "WinRed small-dollar receipts in the ±30-day attack window, per treated official. Pre- and post-attack means are averaged across all attack events for each official. Dormant officials (zero small-dollar throughout) are excluded."
+
+sd_active |>
+  group_by(officeholder, post_id) |>
+  summarise(
+    pre_sd  = mean(daily_small_dollar_receipts[post_attack == 0], na.rm = TRUE),
+    post_sd = mean(daily_small_dollar_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  group_by(officeholder) |>
+  summarise(
+    Attacks              = n(),
+    `Pre mean ($/day)`   = mean(pre_sd),
+    `Post mean ($/day)`  = mean(post_sd),
+    `Net change ($/day)` = mean(post_sd - pre_sd),
+    .groups = "drop"
+  ) |>
+  left_join(meta |> select(officeholder, chamber), by = "officeholder") |>
+  arrange(chamber, `Net change ($/day)`) |>
+  mutate(
+    across(c(`Pre mean ($/day)`, `Post mean ($/day)`, `Net change ($/day)`),
+           ~ scales::dollar(round(.x, 1)))
+  ) |>
+  select(
+    Officeholder = officeholder,
+    Chamber = chamber,
+    Attacks,
+    `Pre mean ($/day)`,
+    `Post mean ($/day)`,
+    `Net change ($/day)`
+  ) |>
+  knitr::kable()
+```
+
+### Small-dollar pre/post change, by official
+
+@fig-sd-per-official shows the per-official change in mean daily WinRed receipts between the 30-day pre- and post-attack windows, using each official's most recent attack event.
+
+```{r}
+#| label: fig-sd-per-official
+#| fig-cap: "Pre- to post-attack change in mean daily WinRed small-dollar receipts (post mean minus pre mean), by official. Each bar represents one official's most recent attack event. Positive values = small-dollar receipts rose after the attack; negative = fell."
+#| fig-height: 6
+
+sd_active |>
+  group_by(officeholder) |>
+  filter(attack_date == max(attack_date)) |>
+  ungroup() |>
+  group_by(officeholder) |>
+  summarise(
+    pre_sd  = mean(daily_small_dollar_receipts[post_attack == 0], na.rm = TRUE),
+    post_sd = mean(daily_small_dollar_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  left_join(meta |> select(officeholder, chamber), by = "officeholder") |>
+  mutate(
+    change    = post_sd - pre_sd,
+    direction = if_else(change >= 0, "Increase", "Decrease"),
+    label     = fct_reorder(officeholder, change)
+  ) |>
+  ggplot(aes(x = change, y = label, fill = direction)) +
+  geom_col() +
+  geom_vline(xintercept = 0, color = "grey30") +
+  facet_wrap(~chamber, scales = "free_y", ncol = 1) +
+  scale_fill_brewer(palette = "Dark2", direction = -1) +
+  scale_x_continuous(labels = dollar) +
+  labs(
+    x    = "Change in mean daily WinRed receipts (post − pre, $)",
+    y    = NULL,
+    fill = NULL
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom", strip.text = element_text(face = "bold"))
+```
+
+### Distribution of small-dollar pre/post changes across all attack events
+
+@fig-sd-change-distribution shows the distribution of per-event small-dollar changes across all attack windows, including officials with multiple attacks as multiple observations.
+
+```{r}
+#| label: fig-sd-change-distribution
+#| fig-cap: "Distribution of pre-to-post changes in mean daily WinRed receipts across all attack event windows for officials with any small-dollar activity. Each observation is one official × attack event. The dashed line marks zero; values to the right indicate small-dollar fundraising rose after the attack."
+#| fig-height: 3.5
+
+sd_active |>
+  group_by(officeholder, post_id, attack_date) |>
+  summarise(
+    pre_sd  = mean(daily_small_dollar_receipts[post_attack == 0], na.rm = TRUE),
+    post_sd = mean(daily_small_dollar_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(change = post_sd - pre_sd) |>
+  ggplot(aes(x = change)) +
+  geom_histogram(bins = 20, fill = "grey60", color = "white") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "#C0392B",
+             linewidth = 0.9) +
+  scale_x_continuous(labels = dollar) +
+  labs(
+    x = "Change in mean daily WinRed receipts (post − pre, $)",
+    y = "Attack windows"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+#| label: inline-sd-direction
+#| include: false
+
+sd_changes <- sd_active |>
+  group_by(officeholder, post_id) |>
+  summarise(
+    pre_sd  = mean(daily_small_dollar_receipts[post_attack == 0], na.rm = TRUE),
+    post_sd = mean(daily_small_dollar_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  group_by(officeholder) |>
+  summarise(net = mean(post_sd - pre_sd), .groups = "drop")
+
+n_sd_dec  <- sum(sd_changes$net < 0)
+n_sd_inc  <- sum(sd_changes$net > 0)
+n_sd_zero <- sum(sd_changes$net == 0)
+```
+
+Of the `r nrow(sd_changes)` officials with any small-dollar activity, `r n_sd_dec` show a net decline in WinRed receipts post-attack and `r n_sd_inc` show an increase — a direction that closely mirrors the large-dollar pattern. **Mitch McConnell** is by far the largest small-dollar fundraiser in the sample (over 93% of his window receipts come through WinRed), yet his small-dollar receipts also decline modestly post-attack. **Todd Young** and **Lisa Murkowski** are the officials with the clearest positive small-dollar responses to their attacks.
+
+## Observations
+
+A few patterns stand out from this descriptive exercise, though all should be interpreted with caution given the small sample and lack of a counterfactual:
+
+- **Slight lean toward decreases.** Of the 18 officials with active fundraising, 6 show higher post-attack means, 10 show lower means or zero in both windows, and 2 are flat. There is no dramatic or consistent suppression effect, but the balance of changes is modestly negative.
+- **Liz Cheney** is the dominant outlier in magnitude: she averaged nearly \$47,000/day in the 30 days before her attack and \$33,000/day after — a decline of roughly \$14,000/day. Her overall fundraising level was far above any other official in the dataset, so her decline drives the pooled average downward. Whether this reflects the attack or her broader political trajectory (she had announced she would not seek re-election to her House seat) is unclear.
+- **John Cornyn** and **Jeff Hurd** show the largest positive changes — both likely driven by other electoral events (Cornyn's Senate leadership campaign, Hurd's competitive 2026 primary) that coincided with or followed their RINO labels rather than the label itself.
+- **Thomas Massie** (11 attack events) is the most-attacked official. His most recent attack window shows a notable drop in post-attack receipts, but across his 11 events the pattern is mixed. By 2026 his committee activity had become sporadic.
+- The event study (@fig-event-study) shows considerable day-to-day volatility, with fundraising already declining somewhat in the days leading up to the attack. There is no visually sharp break at day 0, though average receipts remain somewhat lower in the post-attack period than the pre-attack period across the pooled sample.
+- **Small-dollar (WinRed) channel mirrors the large-dollar pattern.** Of 19 officials with any WinRed activity, 11 show a net post-attack decline and 8 show an increase. The one notable exception to the "no sharp break" pattern is a spike in mean small-dollar receipts on day +1, consistent with a brief grassroots donor reaction to news of the attack — but this dissipates within a day or two and does not translate into a sustained post-attack fundraising boost.
+
+::: callout-important
+## What this analysis cannot tell us
+
+This is a before/after comparison within each official's own fundraising history. Without a counterfactual — what those officials would have raised in the same window absent the attack — it is impossible to distinguish an attack effect from seasonal patterns, electoral calendar effects (FEC filing deadlines, primary timing), or other events coinciding with the attack. The patterns here describe what happened; they do not establish why.
+:::
+
+------------------------------------------------------------------------
+
+## Data sources and reproducibility
+
+| Source | Use | Access |
+|------------------------|------------------------|------------------------|
+| FEC bulk downloads (`fec.gov/files/bulk-downloads/`) | Schedule A itemized contributions; candidate and committee IDs | Public, no API key |
+| Voteview (`voteview.com`) | Congressional seniority; member history | Public |
+| Wikipedia Cook PVI tables | District partisan lean | Public, scraped via `rvest` |
+| RINO attack post dataset | Hand-curated from Trump's public posts, 2020–2026 | Authors |
+
+The analysis dataset (`rdit_dataset.csv`) was assembled using `build_rdit_dataset.R`. The final dataset is `r comma(nrow(rdit))` rows × `r ncol(rdit)` columns.

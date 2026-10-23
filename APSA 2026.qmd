@@ -1,0 +1,208 @@
+---
+title: "`ctk-article` Example"
+subtitle: "With Typst"
+format:
+  ctk-article-typst:
+    keep-typ: true
+author:
+  - name: Author One
+    affiliations:
+      - name: An Organization
+        department: Government
+      - country: USA
+    email: email@email.com
+    orcid: 0000-0000-0000-0000
+  - name: Author Two
+    affiliations:
+      - Affiliation B
+      - country: USA
+  - name: Author Three
+    affiliations:
+      - country: USA
+    email: email2@email.com
+  - name: Author Four
+    affiliations:
+      - country: New Row
+    email: email3@email.com
+date: today
+abstract: |
+  Abstracts can be included in documents in the YAML.
+  The `ctk-article` format is a multipurpose article format that uses `Typst` in
+  the backend.
+keywords:
+  - paper
+  - abstract
+  - typst
+thanks: "Thanks to you for downloading this."
+title-page: false
+blind: false
+bibliography: bibliography.bib
+bibliographystyle: chicago-author-date
+functions:
+  - "titled-raw-block"
+  - "text"
+---
+
+# Introduction
+
+This template is designed for academic preprints and generic submissions.
+It provides features like title pages, document blinding, and more, as detailed in the [README](https://github.com/christopherkenny/ctk-article).
+Notably, this template uses Typst to get from Quarto to a PDF.
+Typst is a newer approach to document-writing which can replace LaTeX.
+It is much faster and simpler to edit using Typst, but it is not as fully developed.
+
+Most things can be done directly using Quarto.
+Quarto simplifies academic writing by allowing you to focus on the content, rather than the style.
+We can cite like normal [@king1994designing; @ho2007matching].
+And we can cross reference @sec-more.
+
+For an introduction to Quarto, see <https://quarto.org/docs/get-started/>.
+
+# More Information {#sec-more}
+
+If you want to use a function from Typst, you can create a div or span.
+This gets rendered using my [`typst-function`](https://github.com/typst-function) Quarto filter.
+This extension is embedded within this template, so it requires no additional setup.
+
+::: {.text arguments="fill:red"}
+These lines are red.
+:::
+
+[To add more Typst functions, add them to the "functions" metadata]{.text arguments="fill:blue"}
+
+# Including Lists
+
+-   Item 1
+-   Item 2
+-   Item 3
+    -   a
+
+# Including Tables
+
+| month      | count |
+| ---------- | ----- |
+| 2024-01-01 | 11159 |
+| 2024-02-01 |  6460 |
+| 2024-03-01 |  8850 |
+| 2024-04-01 |  8471 |
+| 2024-05-01 |  8681 |
+| 2024-06-01 |  7710 |
+
+: Some monthly numbers {#tbl-simple}
+
+# Including code
+
+```{r}
+#| label: fig-sepal
+#| fig-cap: "According to ChatGPT, the Iris data set is a well-known dataset in the field of machine learning and statistics, often used for benchmarking algorithms. It consists of 150 observations of iris flowers from three species: Iris setosa, Iris versicolor, and Iris virginica. Each observation includes four features: sepal length, sepal width, petal length, and petal width, all measured in centimeters. This dataset is particularly useful for classification tasks as the species are distinct and easily separable based on the given measurements. In R, the dataset can be accessed using the datasets package with the command data(iris)."
+plot(iris$Sepal.Length, iris$Sepal.Width)
+```
+
+## Subfigures
+
+Figures can be placed using code, Typst blocks, or using [Quarto's figure syntax](https://quarto.org/docs/authoring/figures.html).
+To make a figure with subfigures, try:
+
+::: {#fig-subfig1 layout-ncol=2 cap-location=bottom}
+
+![fig a]({{< placeholder 100 100 format=svg >}}){#fig-sub1-a}
+
+![fig b]({{< placeholder 100 100 format=svg >}}){#fig-sub1-b}
+
+Caption for the subfigures 1.
+
+:::
+
+# Math works
+
+You can use LaTeX math in Typst-powered Quarto documents:
+
+$$ 3 + 3 \cdot \epsilon $$
+
+Even better, you can use a Typst block to use the Typst syntax, allowing you to use both in one document:
+
+```{=typst}
+$ A = pi r^2 $
+```
+
+## Using `typst-function` extension
+
+This template embeds the [`typst-function`](https://github.com/christopherkenny/typst-function) extension, which lets you use Quarto syntax to call Typst functions.
+
+
+## Including Raw Typst
+
+This template supports including raw Typst blocks and provides a `title-raw-block` function to make it easier to include raw Typst blocks with filenames (or other titles).
+
+```{=typst}
+#titled-raw-block(filename: "test.R",
+  raw(lang: "R", "test <- function() {
+  x <- rnorm(100, 3, 1)
+  mean(x) - 3
+}
+")
+)
+```
+
+### References
+
+Reference are automatically placed at the end of the document.
+The magic refs div does not work by default in typst when `citeproc: false`, see [this issue](https://github.com/quarto-dev/quarto-cli/issues/8710).
+This format, as of v1.1.0, bundles a filter [`typst-refs`](https://github.com/christopherkenny/typst-refs) to handle this.
+Alternatively, if you are okay using a different citation processor, set `citeproc: true` in the YAML.
+
+::: {#refs}
+:::
+
+# Appendix formatting {.appendix}
+
+We can put more stuff here.
+Note that the lettering and numbering gets updated.
+Below we've added a section with a figure, @fig-petal.
+
+## Appendix subsection
+
+```{r}
+#| label: fig-petal
+plot(iris$Petal.Length, iris$Petal.Width)
+```
+
+### Subsubsection
+
+With a surprise sub-sub-section.
+
+| rank     | package  |   count  |
+| -------- | -------- | -------- |
+|     1    |    rlang |  1672290 |
+|     2    |  ggplot2 |  1624767 |
+|     3    |      cli |  1389491 |
+|     4    |     Rcpp |  1386753 |
+|     5    |    dplyr |  1361177 |
+
+: Top R package downloads in June 2024 {#tbl-rpkgs}
+
+# Another appendix section
+
+Why use Typst?
+
+```{=typst}
+#stack(
+  dir: ltr,
+  spacing: 1fr,
+  ..range(16)
+    .map(i => rotate(24deg * i)[#emoji.face.cowboy])
+)
+
+#align(right)[#scale(x: -100%)[
+
+  #let riddle = "Can you make a cowboy do a flip this easily in LaTeX?"
+
+  #for c in riddle [
+    #if c in ("a", "e", "i", "o", "u") {
+      text(fill: rgb("#FF671F"))[#c]
+    } else {
+      text(fill: rgb("#DA1884"))[#c]
+    }
+  ]
+]]
+```

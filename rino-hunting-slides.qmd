@@ -1,0 +1,650 @@
+---
+title: "RINO Hunting"
+subtitle: "Presidential Party Discipline and Donald Trump's Personalization of Republican Party Power"
+author: 
+  - Adam Hilton
+  - Aoife Paul Healy
+institute: 
+  - Mount Holyoke College
+  - Mount Holyoke College ('26)
+date: today
+format: 
+  revealjs:
+    theme: [default, clean.scss]
+    menu:
+      side: left
+    slide-number: true
+    date-format: long
+    footer: APSA 2026
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: setup
+
+# Load libraries
+library(tidyverse)
+library(readxl)
+library(scales)
+library(ggalluvial)
+library(gt)
+library(showtext)
+
+# Load Roboto Light (wt 300) from Google Fonts — matches slide's font-weight: lighter
+font_add_google("Roboto", "Roboto", regular.wt = 300)
+showtext_auto()
+showtext_opts(dpi = 96)
+knitr::opts_chunk$set(fig.showtext = TRUE)
+
+# Import data
+all_sheets <- excel_sheets("~/Desktop/Desktop/Conferences/APSA 2026/rino_data.xlsx") |>
+  setNames(excel_sheets("~/Desktop/Desktop/Conferences/APSA 2026/rino_data.xlsx")) |>
+  lapply(\(s) read_excel("~/Desktop/Desktop/Conferences/APSA 2026/rino_data.xlsx", sheet = s))
+
+rino_officeholders <- all_sheets$rino_officeholders
+rinos_by_cycle     <- all_sheets$rinos_by_cycle
+rino_events        <- all_sheets$rino_events
+people_name_id     <- all_sheets$people_name_id
+people_labels      <- all_sheets$people_labels
+all_events         <- all_sheets$all_events
+
+# Set theme
+theme_set(
+  theme_minimal(base_size = 22, base_family = "Roboto") +
+  theme(text = element_text(color = "#131516"))
+)
+
+```
+
+## RINO hunting
+
+![Reposted to Truth Social by Donald Trump, May 2026.](figures/trump_rino_truthsocial.jpg)
+
+## Puzzle
+
+::: incremental
+- Shift in intraparty power
+
+  - From durable institution to personalist rule
+
+    - Strongman leader
+
+- Trump's RINO attacks
+
+  - On Republicans' *partisan legitimacy*
+
+    - Reframes disloyalty to Trump as disloyalty to an institution
+
+      - Novel form of *presidential party discipline*
+
+        - Successful where past presidents failed
+
+        - Transforming party identity
+:::
+
+## Outline
+
+- Situate our contribution
+
+- Theory of presidential party discipline
+
+- Hypotheses
+
+- Research design
+
+- Findings
+
+- Takeaways and implications
+
+## Our contribution
+
+![](figures/rino_lit.drawio.png){fig-align="center"}
+
+## Presidential party discipline
+
+![](figures/party_concept_map.drawio.png){fig-align="center" width="8in"}
+
+## Presidential party discipline
+
+::: incremental
+- Presidential dilemma when "going public" against co-partisans
+
+  - Short-sighted, divisive, petty
+
+    <br>
+
+- Strategically advantageous to frame intraparty opponents as *traitors*
+
+  - Turning against a collective organization and shared identity
+:::
+
+## Hypotheses
+
+Presidential attacks on co-partisans will be associated with:
+
+::: incremental
+1.  A decline in the targeted officeholder’s campaign fundraising.
+
+    <br>
+
+2.  The entry of substantial primary challengers in the next election cycle.
+
+    <br>
+
+3.  Officeholder exit due to either losing renomination or retiring.
+
+    <br>
+
+4.  Primary challenges and exit from office as the number of attacks increases.
+:::
+
+## Research design
+
+::: incremental
+- Collected every instance of Trump's use of RINO (N = 318) since 2015
+
+  - Social media
+
+  - Speeches
+
+  - Press
+
+- Hand-coded for targets
+
+  - Individual
+
+  - Group
+
+  - Vague
+
+- Descriptive and associational analysis
+:::
+
+# Findings
+
+## *RINO attacks over time*
+
+```{r}
+
+all_events |>
+  mutate(quarter = floor_date(event_date, unit = "quarter")) |>
+  ggplot(aes(x = quarter, fill = platform)) +
+  annotate("rect",
+           xmin = as.POSIXct("2022-03-01"), xmax = as.POSIXct("2022-08-31"),
+           ymin = -Inf, ymax = Inf, alpha = 0.30, fill = "steelblue") +
+  annotate("rect",
+           xmin = as.POSIXct("2024-03-01"), xmax = as.POSIXct("2024-08-31"),
+           ymin = -Inf, ymax = Inf, alpha = 0.30, fill = "steelblue") +
+  annotate("rect",
+           xmin = as.POSIXct("2026-03-01"), xmax = as.POSIXct("2026-08-31"),
+           ymin = -Inf, ymax = Inf, alpha = 0.30, fill = "steelblue") +
+  geom_vline(xintercept = as.POSIXct("2022-11-08"), linetype = "dashed", color = "gray30") +
+  geom_vline(xintercept = as.POSIXct("2024-11-05"), linetype = "dashed", color = "gray30") +
+  geom_bar() +
+  annotate("text", x = as.POSIXct("2022-11-08"), y = 31, label = "Nov 2022", hjust = -0.1, size = 4, family = "Roboto") +
+  annotate("text", x = as.POSIXct("2024-11-05"), y = 31, label = "Nov 2024", hjust = -0.1, size = 4, family = "Roboto") +
+  annotate("text", x = as.POSIXct("2022-06-01"), y = 29, label = "Primary\nSeason", hjust = 0.5, size = 3, color = "grey8", family = "Roboto") +
+  annotate("text", x = as.POSIXct("2024-06-01"), y = 29, label = "Primary\nSeason", hjust = 0.5, size = 3, color = "grey8", family = "Roboto") +
+  annotate("text", x = as.POSIXct("2026-06-01"), y = 29, label = "Primary\nSeason", hjust = 0.5, size = 3, color = "grey8", family = "Roboto") +
+  coord_cartesian(xlim = c(as.POSIXct("2019-10-01"), NA)) +
+  labs(x = "", y = "Number of events", fill = "Platform") +
+  theme(legend.position = "bottom") +
+  scale_fill_brewer(palette = "Dark2", direction = -1)
+```
+
+## *Who is a RINO?*
+
+```{r}
+events_with_people <- all_events |>
+  inner_join(rino_events |> select(event_id, person_id = rino_attack), by = "event_id") |>
+  inner_join(people_name_id, by = "person_id")
+
+events_with_people |>
+  count(name, sort = TRUE) |>
+  slice_head(n = 10) |>
+  mutate(
+    officeholder = if_else(
+      name %in% filter(events_with_people, person_id %in% rino_officeholders$person_id)$name,
+      "Yes", "No")
+  ) |>
+  rename(Name = name, Attacks = n, Officeholder = officeholder) |> 
+  ggplot(aes(y = fct_reorder(Name, Attacks), x = Attacks, 
+             fill = factor(Officeholder))) +
+  geom_col() +
+  labs(y = "", 
+       title = "Top 10 RINO targets", 
+       fill = "Officeholder") +
+  theme(plot.title.position = "plot", 
+        legend.position = "bottom") +
+  scale_fill_brewer(palette = "Set2", direction = -1)
+```
+
+## *Who is a RINO?*
+
+```{r}
+meta_all <- read_csv("~/Desktop/Desktop/Conferences/APSA 2026/rino_officeholder_metadata.csv", show_col_types = FALSE)
+
+officeholder_events <- events_with_people |>
+  filter(person_id %in% rino_officeholders$person_id)
+
+attack_counts_all <- officeholder_events |>
+  count(person_id, name = "n_attacks")
+
+oh_all <- meta_all |>
+  left_join(
+    rino_officeholders |> rename(officeholder = officeholder_rino_name),
+    by = "officeholder"
+  ) |>
+  left_join(attack_counts_all, by = "person_id") |>
+  mutate(
+    n_attacks = replace_na(n_attacks, 0),
+    level = case_when(
+      chamber %in% c("House", "Senate")                          ~ "Federal",
+      chamber %in% c("State House", "State Senate",
+                     "Statewide", "Local", "Presidential")       ~ "State",
+      TRUE                                                        ~ NA_character_
+    ),
+    office_type = case_when(
+      chamber == "House"                             ~ "U.S. House",
+      chamber == "Senate"                            ~ "U.S. Senate",
+      chamber %in% c("Statewide", "Presidential")   ~ office,
+      chamber == "State House"                       ~ "State House",
+      chamber == "State Senate"                      ~ "State Senate",
+      TRUE                                           ~ chamber
+    )
+  )
+
+library(PrettyCols)
+oh_all |>
+  count(level, office_type) |>
+  arrange(level, desc(n)) |>
+  rename(Level = level, `Office type` = office_type, N = n) |> 
+  filter_out(`Office type` == "Candidate") |> 
+  ggplot(aes(y = reorder(`Office type`, N), x = N, fill = `Office type`)) +
+  geom_col() +
+  scale_fill_brewer(palette = "Set2") +
+  theme(legend.position = "none") +
+  labs(x = NULL, y = NULL)
+    
+```
+
+## *Who is a RINO?*
+
+```{r}
+library(ggplot2)
+library(ggrepel)
+
+rinos_ideology <- read_csv("~/Desktop/Desktop/Conferences/APSA 2026/rinos_ideology.csv")
+
+ggplot(rinos_ideology, 
+       aes(x = cook_pvi_num, y = nominate_dim1)) +
+  geom_smooth(method = "lm", se = F, linewidth = 0.5, color = "grey") +
+  geom_point(aes(shape = chamber, color = chamber), size = 3) +
+  geom_text_repel(aes(label = officeholder), size = 5, max.overlaps = 20,
+                  segment.color = "gray70", family = "Roboto") +
+  scale_shape_manual(values = c(House = 16, Senate = 17)) +
+  scale_color_brewer(palette = "Dark2") +
+  labs(
+    x = "District partisanship",
+    y = "Ideology",
+    shape = "Chamber", 
+    color = "Chamber"
+  ) +
+  theme(legend.position = "right")
+
+```
+
+# *Electoral consequences of RINO attacks*
+
+## Campaign finance -- large donors
+
+```{r}
+library(tidyverse)
+library(scales)
+
+rdit  <- read_csv("~/Desktop/Desktop/Conferences/APSA 2026/rdit_dataset.csv", show_col_types = FALSE)
+meta  <- read_csv("~/Desktop/Desktop/Conferences/APSA 2026/rino_officeholder_metadata.csv", show_col_types = FALSE)
+posts <- read_csv("~/Desktop/Desktop/Conferences/APSA 2026/rino_posts.csv", show_col_types = FALSE)
+
+# Treated officials only; exclude those with no federal committee (Hogan, O'Dea, Ricketts)
+df <- rdit |>
+  filter(is_treated == 1, !is.na(daily_total_receipts)) |>
+  mutate(
+    log_total  = log1p(daily_total_receipts),
+    post_attack = as.integer(post_attack)
+  )
+
+# Flag officials whose committee was entirely dormant during their attack window
+dormant <- df |>
+  group_by(officeholder) |>
+  summarise(has_receipts = any(daily_total_receipts > 0), .groups = "drop") |>
+  filter(!has_receipts) |>
+  pull(officeholder)
+
+# Active sample: officials with at least some fundraising activity
+df_active <- df |> filter(!officeholder %in% dormant)
+
+# Small-dollar analysis samples (WinRed conduit)
+treated_active <- rdit |>
+  filter(is_treated == 1, !is.na(daily_small_dollar_receipts)) |>
+  group_by(officeholder) |>
+  filter(any(daily_total_receipts > 0 | daily_small_dollar_receipts > 0)) |>
+  ungroup()
+
+sd_active <- treated_active |>
+  group_by(officeholder) |>
+  filter(any(daily_small_dollar_receipts > 0)) |>
+  ungroup()
+
+df_active |>
+  group_by(days_from_attack) |>
+  summarise(mean_log = mean(log_total), .groups = "drop") |>
+  ggplot(aes(x = days_from_attack, y = mean_log)) +
+  geom_line(linewidth = 0.8, color = "#C0392B", alpha = 0.75, linewidth = 0.8) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  annotate("text", x = 1, y = Inf,
+           label = "Attack date", vjust = 1.5, hjust = 0, size = 5, color = "grey8", family = "Roboto") +
+  labs(
+    x = "Days from attack",
+    y = "log(mean daily receipts)"
+  ) +
+  geom_smooth(se = F, color = "black", linewidth = 0.5) +
+  scale_y_continuous(
+    breaks = log1p(c(0, 20, 40, 60, 80)),
+    labels = scales::dollar(c(0, 20, 40, 60, 80))
+  )
+```
+
+## Large donors — House members
+
+```{r}
+per_official <- df_active |>
+  group_by(officeholder) |>
+  filter(attack_date == max(attack_date)) |>
+  ungroup() |>
+  group_by(officeholder) |>
+  summarise(
+    pre_mean  = mean(daily_total_receipts[post_attack == 0], na.rm = TRUE),
+    post_mean = mean(daily_total_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  left_join(meta |> select(officeholder, chamber), by = "officeholder") |>
+  mutate(
+    change    = post_mean - pre_mean,
+    direction = if_else(change >= 0, "Increase", "Decrease"),
+    label     = fct_reorder(officeholder, change)
+  )
+
+per_official |>
+  filter(chamber == "House") |>
+  ggplot(aes(x = change, y = label, fill = direction)) +
+  geom_col() +
+  geom_vline(xintercept = 0, color = "grey30") +
+  scale_fill_brewer(palette = "Dark2", direction = -1) +
+  scale_x_continuous(labels = dollar) +
+  labs(x = "Change in mean daily receipts", y = NULL, fill = NULL) +
+  theme(legend.position = "bottom")
+```
+
+## Large donors — Senate members
+
+```{r}
+per_official |>
+  filter(chamber == "Senate") |>
+  ggplot(aes(x = change, y = label, fill = direction)) +
+  geom_col() +
+  geom_vline(xintercept = 0, color = "grey30") +
+  scale_fill_brewer(palette = "Dark2", direction = -1) +
+  scale_x_continuous(labels = dollar) +
+  labs(x = "Change in mean daily receipts", y = NULL, fill = NULL) +
+  theme(legend.position = "bottom")
+```
+
+## Campaign finance — small donors
+
+```{r}
+treated_active |>
+  group_by(days_from_attack) |>
+  summarise(
+    `Large-dollar (≥$200 itemized)` = mean(log1p(daily_total_receipts)),
+    `Small-dollar (WinRed)`         = mean(log1p(daily_small_dollar_receipts)),
+    .groups = "drop"
+  ) |>
+  pivot_longer(-days_from_attack, names_to = "Channel", values_to = "mean_log") |>
+  ggplot(aes(x = days_from_attack, y = mean_log, color = Channel)) +
+  geom_line(linewidth = 0.8, alpha = 0.75) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  annotate("text", x = 1, y = Inf, label = "Attack date", vjust = 1, hjust = 0, size = 4.5, color = "grey8") +
+  scale_color_manual(values = c("#C0392B", "darkred")) +
+  labs(
+    x     = "Days from attack",
+    y     = "log(mean daily receipts)",
+    color = NULL
+  ) +
+  theme(legend.position = "bottom") +
+  geom_smooth(se = F, linewidth = 0.5, alpha = 0.75) +
+  scale_y_continuous(
+    breaks = log1p(c(0, 20, 40, 60, 80)),
+    labels = scales::dollar(c(0, 20, 40, 60, 80))
+  )
+```
+
+## Small donors — House members
+
+```{r}
+sd_per_official <- sd_active |>
+  group_by(officeholder) |>
+  filter(attack_date == max(attack_date)) |>
+  ungroup() |>
+  group_by(officeholder) |>
+  summarise(
+    pre_sd  = mean(daily_small_dollar_receipts[post_attack == 0], na.rm = TRUE),
+    post_sd = mean(daily_small_dollar_receipts[post_attack == 1], na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  left_join(meta |> select(officeholder, chamber), by = "officeholder") |>
+  mutate(
+    change    = post_sd - pre_sd,
+    direction = if_else(change >= 0, "Increase", "Decrease"),
+    label     = fct_reorder(officeholder, change)
+  )
+
+sd_per_official |>
+  filter(chamber == "House") |>
+  ggplot(aes(x = change, y = label, fill = direction)) +
+  geom_col() +
+  geom_vline(xintercept = 0, color = "grey30") +
+  scale_fill_brewer(palette = "Dark2", direction = -1) +
+  scale_x_continuous(labels = dollar) +
+  labs(x = "Change in mean daily WinRed receipts", 
+       y = NULL, 
+       fill = NULL) +
+  theme(legend.position = "bottom")
+```
+
+## Small donors — Senate members
+
+```{r}
+sd_per_official |>
+  filter(chamber == "Senate") |>
+  ggplot(aes(x = change, y = label, fill = direction)) +
+  geom_col() +
+  geom_vline(xintercept = 0, color = "grey30") +
+  scale_fill_brewer(palette = "Dark2", direction = -1) +
+  scale_x_continuous(labels = dollar) +
+  labs(x = "Change in mean daily WinRed receipts", y = NULL, fill = NULL) +
+  theme(legend.position = "bottom")
+```
+
+## Primaries and retirement
+
+```{r}
+cycle_panel <- read_csv("~/Desktop/Desktop/Conferences/APSA 2026/cycle_panel_with_outcomes.csv", show_col_types = FALSE)
+
+state_outcomes_raw <- read_csv("~/Desktop/Desktop/Conferences/APSA 2026/state_officeholder_outcomes.csv", show_col_types = FALSE)
+
+official_level <- cycle_panel |>
+  filter(is_treated == 1, !is.na(bioname)) |>
+  group_by(bioname) |>
+  summarise(
+    any_substantial = any(substantial_challenge == TRUE, na.rm = TRUE),
+    worst_outcome   = case_when(
+      any(outcome == "lost_primary", na.rm = TRUE) ~ "Lost primary",
+      any(outcome == "retired",      na.rm = TRUE) ~ "Retired",
+      any(outcome == "won_primary",  na.rm = TRUE) ~ "Won primary",
+      TRUE ~ NA_character_
+    ),
+    .groups = "drop"
+  ) |>
+  filter(!is.na(worst_outcome))
+
+state_for_combined <- state_outcomes_raw |>
+  mutate(
+    level     = "State/Local",
+    challenge = factor(
+      if_else(any_substantial, "Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)"),
+      levels = c("Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)")
+    ),
+    outcome_f = factor(
+      case_when(
+        worst_outcome == "Won primary"  ~ "Won\nprimary",
+        worst_outcome == "Lost primary" ~ "Lost\nprimary",
+        TRUE                            ~ "Retired"
+      ),
+      levels = c("Won\nprimary", "Retired", "Lost\nprimary")
+    )
+  )
+
+fed_for_combined <- official_level |>
+  mutate(
+    level     = "Federal",
+    challenge = factor(
+      if_else(any_substantial, "Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)"),
+      levels = c("Substantial\n(\u2265 25%)", "Not\nsubstantial\n(< 25%)")
+    ),
+    outcome_f = factor(
+      case_when(
+        worst_outcome == "Won primary"  ~ "Won\nprimary",
+        worst_outcome == "Lost primary" ~ "Lost\nprimary",
+        TRUE                            ~ "Retired"
+      ),
+      levels = c("Won\nprimary", "Retired", "Lost\nprimary")
+    )
+  )
+
+combined_long <- bind_rows(
+  fed_for_combined   |> select(level, challenge, outcome_f),
+  state_for_combined |> select(level, challenge, outcome_f)
+) |>
+  mutate(level = factor(level, levels = c("Federal", "State/Local")))
+
+combined_alluvial <- combined_long |>
+  count(level, challenge, outcome_f, name = "freq") |> mutate(
+    level = fct_recode(level, "State" = "State/Local")
+  )
+
+
+ggplot(combined_alluvial,
+       aes(axis1 = level, axis2 = challenge, axis3 = outcome_f, y = freq)) +
+  geom_alluvium(aes(fill = outcome_f), alpha = 0.72, width = 1/4) +
+  geom_stratum(width = 1/4, fill = "white", color = "grey40", linewidth = 0.4) +
+  geom_text(
+    stat = "stratum",
+    aes(label = paste0(after_stat(stratum), "\n(n = ", after_stat(count), ")")),
+    size = 4, lineheight = 1.1, family = "Roboto"
+  ) +
+  scale_fill_manual(
+    values = c("Won\nprimary" = "#4dab6d", "Retired" = "#f4a942",
+               "Lost\nprimary" = "#c0392b"),
+    guide  = "none"
+  ) +
+  scale_x_discrete(
+    limits = c("level", "challenge", "outcome_f"),
+    labels = c("Level", "Primary challenge", "Outcome"),
+    expand = c(0.15, 0.15)
+  ) +
+  theme_minimal(base_size = 22, base_family = "Roboto") +
+  theme(
+    text         = element_text(color = "#131516"),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid   = element_blank(),
+    axis.text.x  = element_text(face = "bold", size = 14, family = "Roboto", color = "#131516"),
+    plot.margin  = margin(5, 10, 5, 10)
+  ) +
+  labs(x = NULL, y = NULL)
+```
+
+## Attack intensity
+
+```{r}
+cycle_panel |>
+  filter(is_treated == 1, is_election_year == TRUE) |>
+  mutate(
+    cumulative_attacks_corrected = replace_na(cumulative_attacks_corrected, 0),
+    outcome_label = case_when(
+      outcome == "won_primary"  ~ "Won primary",
+      outcome == "lost_primary" ~ "Lost primary",
+      outcome == "retired"      ~ "Retired",
+      TRUE                      ~ "Won primary"
+    ),
+    attack_tier = cut(cumulative_attacks_corrected,
+                      breaks = c(-Inf, 0, 2, Inf),
+                      labels = c("1", "2–3", "3+"))
+  ) |>
+  count(attack_tier, outcome_label) |>
+  mutate(outcome_label = factor(outcome_label,
+                                levels = c("Won primary", "Retired", "Lost primary"))) |>
+  ggplot(aes(x = attack_tier, y = n, fill = outcome_label)) +
+  geom_col() +
+  scale_fill_manual(
+    values = c("Won primary" = "#4dab6d", "Retired" = "#f4a942",
+               "Lost primary" = "#c0392b")
+  ) +
+  labs(x = "Pre-primary RINO attacks",
+       y = "Number of observations",
+       fill = "Outcome") +
+  theme(legend.position = "bottom")
+```
+
+# Takeaways and implications
+
+## Takeaways
+
+::: incremental
+- Trump’s RINO rhetoric has swelled over time.
+
+  <br>
+
+- Directed at a heterogeneous set of targets.
+
+  <br>
+
+- Electoral consequences of being targeted are also mixed.
+:::
+
+## Implications
+
+::: incremental
+- How durable a shift in party power?
+
+  - Trump’s RINO rhetoric may be as unique as he is.
+
+    <br>
+
+- Party asymmetry
+
+  - No comparable DINO phenomenon.
+
+    <br>
+
+- The true effect of interest
+
+  - To what extent does Trump’s RINO hunting affect *all* Republicans?
+:::
+
+# Thank you
+
+Looking forward to the discussion

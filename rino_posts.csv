@@ -1,0 +1,157 @@
+post_id,officeholder,reposts,likes,date_time,platform,source
+p001,Mitt Romney,16000,102000,2020-03-25T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1242777450662244352
+p002,Pat Toomey,19000,92000,2020-07-12T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1282155171909435393
+p002,Mitt Romney,19000,92000,2020-07-12T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1282155171909435393
+p003,Ben Sasse,9700,47000,2020-08-10T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1292832946077007886
+p004,Charlie Baker,10000,46000,2020-09-25T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1309455713882828802
+p005,Ben Sasse,8400,46000,2020-10-17T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1317460178246291462
+p006,Al Schmidt,33000,220000,2020-11-11T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1326525851752656898
+p007,Brad Raffensperger,32000,155000,2020-11-14T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1327413534901350400
+p008,Mitt Romney,9600,58000,2020-11-20T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1329769666546372613
+p009,Larry Hogan,17000,82000,2020-11-22T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1330556513589620736
+p010,Geoff Duncan,18000,91000,2020-12-08T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1336148836495069185
+p011,Brian Kemp,19000,104000,2020-12-12T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1337749020706549762
+p011,Doug Ducey,19000,104000,2020-12-12T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1337749020706549762
+p012,John Thune,23000,139000,2020-12-23T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1341547750710800385
+p013,John Thune,16000,101000,2021-01-01T00:00:00Z,Twitter,https://x.com/realDonaldTrump/status/1345077337633787905
+p014,Nancy Mace,12800,45200,2022-05-10T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108280691476527480
+p015,Brian Kemp,14600,37900,2022-05-11T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108284897900361808
+p015,Doug Ducey,14600,37900,2022-05-11T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108284897900361808
+p015,Pete Ricketts,14600,37900,2022-05-11T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108284897900361808
+p016,John Cornyn,16200,42700,2022-06-22T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108521433131808244
+p017,Peter Meijer,5290,21100,2022-07-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108583567750183685
+p018,Asa Hutchinson,6290,25900,2022-07-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108583630850735413
+p019,Larry Hogan,4280,17000,2022-07-05T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108597177769311888
+p019,Kelly Schulz,4280,17000,2022-07-05T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108597177769311888
+p020,Robin Vos,8230,27900,2022-07-13T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108643627835350443
+p021,Larry Hogan,6460,23700,2022-07-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108671198385846264
+p021,Kelly Schulz,6460,23700,2022-07-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108671198385846264
+p022,Larry Hogan,3300,19500,2022-07-19T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108677421183428176
+p023,Larry Hogan,3430,15000,2022-07-22T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108688171523926056
+p024,Robin Vos,7060,26200,2022-07-29T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108730813188866088
+p025,Mitch McConnell,4990,19000,2022-07-31T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108742093722670660
+p025,Robin Vos,4990,19000,2022-07-31T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108742093722670660
+p026,Liz Cheney,5860,23700,2022-08-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108754314571547171
+p027,Rusty Bowers,5180,24800,2022-08-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108758924673750793
+p028,Ben Sasse,2900,9720,2022-08-30T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108911718927440645
+p028,Bill Cassidy,2900,9720,2022-08-30T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108911718927440645
+p028,Mitt Romney,2900,9720,2022-08-30T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108911718927440645
+p028,Lisa Murkowski,2900,9720,2022-08-30T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108911718927440645
+p028,Richard Burr,2900,9720,2022-08-30T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108911718927440645
+p028,Pat Toomey,2900,9720,2022-08-30T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108911718927440645
+p028,Susan Collins,2900,9720,2022-08-30T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108911718927440645
+p028,Mitch McConnell,2900,9720,2022-08-30T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/108911718927440645
+p029,Ben Sasse,5280,23900,2022-10-06T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109123698568322659
+p030,Mitt Romney,5520,23800,2022-10-16T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109181200105620085
+p031,Joe O'Dea,5670,21700,2022-10-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109184206195801630
+p032,Todd Young,5560,23200,2022-10-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109184387016819050
+p032,John Thune,5560,23200,2022-10-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109184387016819050
+p032,Mitch McConnell,5560,23200,2022-10-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109184387016819050
+p033,Fred Upton,6800,29800,2022-12-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109452629576030420
+p034,Mitch McConnell,10500,43800,2023-01-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109628095735391441
+p035,Robin Vos,4070,17300,2023-02-15T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109871472618080269
+p036,Ron DeSantis,8320,28800,2023-02-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109889592055706283
+p037,Ron DeSantis,5880,22100,2023-02-19T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109893375129886130
+p038,Chris Sununu,2700,11300,2023-03-06T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/109979295357233644
+p039,Ron DeSantis,7310,23000,2023-03-06T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/110031052613715386
+p040,Ron DeSantis,2370,7490,2023-04-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/110265734807401570
+p041,Asa Hutchinson,4940,21500,2023-05-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/110330657581324681
+p042,Dade Phelan,7360,24000,2023-05-27T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/110441844700908079
+p043,Chris Sununu,3710,15500,2023-06-05T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/110494791970487388
+p044,Mitch McConnell,3110,11100,2023-06-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/110559861450134149
+p045,Chris Sununu,5240,21300,2023-07-31T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/110809893889686732
+p046,Brian Kemp,5820,19.5,2023-09-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111003566712697755
+p047,Mitt Romney,3330,11700,2023-10-23T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111285094186775532
+p048,Tom Emmer,12400,37900,2023-10-24T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111291340230348905
+p049,Ken Buck,5640,23100,2023-11-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111338853760324065
+p050,Mitch McConnell,2940,11300,2023-12-05T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111529649299840132
+p051,Chris Christie,3390,14900,2023-12-15T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111584505148063019
+p052,Chip Roy,3850,12300,2023-12-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111605092319569772
+p053,Ron DeSantis,4210,15200,2023-12-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111649886068952774
+p053,Nikki Haley,4210,15200,2023-12-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111649886068952774
+p054,Nikki Haley,5000,17600,2024-01-15T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111761145916934631
+p055,DeWayne Burns,1880,6730,2024-02-20T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111965192109057760
+p056,John Kuempel,1900,6830,2024-02-20T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111965193068093105
+p057,Glenn Rogers,1940,7020,2024-02-20T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111965194011948836
+p058,Stan Lambert,2120,7610,2024-02-20T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/111965196267085361
+p059,Ernest Bailes,2820,11000,2024-02-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112000986916603073
+p060,Drew Darby,2840,11300,2024-02-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112000987763553235
+p061,Morgan Meyer,3910,15100,2024-02-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112000996458671860
+p062,Mitt Romney,3200,32000,2024-03-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112057643072727267
+p063,Craig Riedel,2640,11100,2024-03-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112118237721459163
+p064,Kelly Daughtry,3500,13900,2024-04-05T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112221240353145349
+p065,Roger Roth,4160,17400,2024-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112232608717264055
+p066,Dan Newhouse,3190,13000,2024-04-12T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112260040278973588
+p067,Roger Roth,2930,11000,2024-04-22T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112315144040309876
+p068,Kelly Daughtry,2410,9450,2024-05-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112377412681654009
+p069,John Kuempel,2460,9720,2024-05-06T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112397213945163969
+p070,DeWayne Burns,2520,10000,2024-05-06T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112397214906859295
+p071,John Kuempel,2380,9620,2024-05-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112464659773449413
+p072,DeWayne Burns,2540,10200,2024-05-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112464661892969590
+p073,John Kuempel,2250,10200,2024-05-27T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112513847043553932
+p074,DeWayne Burns,3060,12300,2024-05-27T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112513848940452439
+p075,Bill Lee,3710,20100,2024-08-01T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112890404838841217
+p076,Bill Lee,6480,31400,2024-08-01T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112890406493417192
+p077,Dan Newhouse,2780,12600,2024-08-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112901209865890540
+p078,Roger Roth,3330,13800,2024-08-13T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112952762006094389
+p079,Dan Newhouse,3010,13100,2024-08-14T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/112963062942223090
+p080,Dan Newhouse,4950,21400,2024-10-29T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/113390799523768623
+p081,Thomas Massie,4950,21400,2025-06-24T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/114738530800440064
+p082,Thomas Massie,8310,30600,2025-10-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115391855540856433
+p083,Thomas Massie,7030,26600,2025-11-03T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115487538389910575
+p084,Marjorie Taylor Greene,5870,23000,2025-11-15T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115553994466678093
+p084,Thomas Massie,5870,23000,2025-11-15T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115553994466678093
+p085,Greg Goode,9850,35000,2025-11-16T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115560208774541030
+p085,Rodric Bray,9850,35000,2025-11-16T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115560208774541030
+p086,Rodric Bray,5270,20700,2025-11-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115567070909453272
+p087,Rodric Bray,5570,23500,2025-11-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115567081810209795
+p088,Rodric Bray,4700,19600,2025-11-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115570749579575260
+p089,Dan Rubinstein,4490,24700,2025-12-31T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115815355325954705
+p090,Thomas Massie,7070,27500,2026-01-05T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115844769291604784
+p091,Rodric Bray,6080,24800,2026-01-17T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115913968629100828
+p092,Travis Holdman,44100,17700,2026-01-22T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115941568330748012
+p093,Thomas Massie,5450,20700,2026-01-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115963236796090298
+p094,Greg Walker,5150,21900,2026-01-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115963259137242895
+p095,Jim Buck,5240,21900,2026-01-26T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115964309300790101
+p096,Spencer Deery,,,2026-01-28T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115969963682592720
+p097,Greg Goode,,,2026-01-28T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115969971098103360
+p098,Eric Bassler,,,2026-01-28T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/115969989606605553
+p099,Thomas Massie,,,2026-02-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116002977324733248
+p100,Kevin Stitt,,,2026-02-11T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116054089500353661
+p101,Kevin Stitt,,,2026-02-12T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116054547319697639
+p102,Kevin Stitt,,,2026-02-12T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116058424559317277
+p103,Thomas Massie,,,2026-02-12T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116058518017586892
+p104,Jeff Hurd,,,2026-02-21T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116110654345152184
+p105,Travis Holdman,,,2026-02-25T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116132655097895049
+p106,Jim Buck,,,2026-02-25T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116132657565539301
+p107,Spencer Deery,,,2026-02-25T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116132660072247417
+p108,Greg Goode,,,2026-02-25T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116132664237842476
+p109,Greg Walker,,,2026-02-25T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116132669184154738
+p110,Eric Bassler,,,2026-02-25T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116132682244438861
+p111,Thomas Massie,,,2026-03-11T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116207697653886877
+p112,Dan Rubinstein,,,2026-03-20T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116263751750331124
+p113,Travis Holdman,,,2026-03-24T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116285866660628943
+p114,Jim Buck,,,2026-03-24T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116285893161347117
+p115,Spencer Deery,,,2026-03-24T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116285900153878228
+p116,Greg Goode,,,2026-03-24T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116285903958791106
+p117,Eric Bassler,,,2026-03-24T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116285906390195915
+p118,Greg Walker,,,2026-03-24T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116285908636437489
+p119,Dan Dernulc,,,2026-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116365255671979732
+p120,Travis Holdman,,,2026-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116365271173259328
+p121,Jim Buck,,,2026-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116365272431087703
+p122,Spencer Deery,,,2026-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116365273811504261
+p123,Greg Goode,,,2026-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116365275300009543
+p124,Eric Bassler,,,2026-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116365277089556863
+p125,Greg Walker,,,2026-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116365279658494851
+p126,Linda Rogers,,,2026-04-07T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116365303932078350
+p127,Dan Dernulc,,,2026-05-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116501807970154632
+p128,Linda Rogers,,,2026-05-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116501809611050315
+p129,Travis Holdman,,,2026-05-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116501811511192146
+p130,Jim Buck,,,2026-05-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116501812537382758
+p131,Spencer Deery,,,2026-05-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116501813635219695
+p132,Greg Goode,,,2026-05-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116501814630910015
+p133,Greg Walker,,,2026-05-02T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116501816483688599
+p134,Thomas Massie,,,2026-05-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116591756607268698
+p135,Thomas Massie,,,2026-05-18T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116596880033987241
+p136,David Pascoe,,,2026-05-22T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116615125212867437
+p137,David Pascoe,,,2026-06-08T00:00:00Z,Truth Social,https://truthsocial.com/@realDonaldTrump/posts/116715625347665800

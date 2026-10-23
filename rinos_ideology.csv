@@ -1,0 +1,24 @@
+officeholder,bioguide_id,congress,chamber,state_abbrev,nominate_dim1,nominate_dim2,nokken_poole_dim1,nokken_poole_dim2,cook_pvi_num
+Mitt Romney,R000615,118,Senate,UT,0.286,0.294,0.263,0.339,11
+Pat Toomey,T000461,117,Senate,PA,0.624,-0.378,0.614,-0.487,1
+Ben Sasse,S001197,117,Senate,NE,0.669,-0.25,0.573,-0.098,10
+John Thune,T000250,119,Senate,SD,0.431,0.231,0.365,0.288,15
+Nancy Mace,M000194,119,House,SC,0.35,-0.295,0.474,-0.342,8
+Pete Ricketts,R000618,119,Senate,NE,0.445,0.491,0.474,0.312,10
+John Cornyn,C001056,119,Senate,TX,0.471,-0.06,0.597,0.263,6
+Peter Meijer,M001186,117,House,MI,0.245,0.213,0.241,0.22,0
+Mitch McConnell,M000355,119,Senate,KY,0.402,0.017,0.328,-0.05,15
+Liz Cheney,C001109,117,House,WY,0.405,0.82,0.282,0.815,23
+Bill Cassidy,C001075,119,Senate,LA,0.462,-0.054,0.408,-0.115,11
+Lisa Murkowski,M001153,119,Senate,AK,0.203,-0.305,0.174,-0.218,6
+Richard Burr,B001135,117,Senate,NC,0.435,-0.07,0.363,0.074,1
+Susan Collins,C001035,119,Senate,ME,0.124,-0.506,0.171,-0.43,-4
+Todd Young,Y000064,119,Senate,IN,0.444,-0.042,0.546,-0.142,9
+Fred Upton,U000031,117,House,MI,0.32,-0.355,0.205,-0.027,0
+Tom Emmer,E000294,119,House,MN,0.468,-0.062,0.567,0.229,-3
+Ken Buck,B001297,118,House,CO,0.655,-0.432,0.413,-0.458,-6
+Chip Roy,R000614,119,House,TX,0.8,-0.6,0.8,-0.6,6
+Dan Newhouse,N000189,119,House,WA,0.317,0.337,0.287,0.578,-10
+Thomas Massie,M001184,119,House,KY,0.658,-0.753,0.532,-0.847,15
+Marjorie Taylor Greene,G000596,119,House,GA,0.8,-0.6,0.637,-0.647,1
+Jeff Hurd,H001100,119,House,CO,0.31,0.318,0.31,0.318,-6
